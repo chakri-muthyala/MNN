@@ -1,12 +1,10 @@
+##### This is a modified MNN library by Alibaba that is compatible to run inference on Nvidia Jetson Nano. Convert ONNX model to MNN model on desktop(x86) and run inference on jetson nano, code is cross compatible.
 
+### Installation
 
-
-### This is a modified MNN library by Alibaba that is compatible to run inference on Nvidia Jetson Nano.
-### Tip: Convert ONNX model to MNN model on desktop(x86) and run inference on jetson nano.
-
-### Installation Steps:
-apt-get install graphviz
-apt-get install libprotobuf-dev protobuf-compiler
+```sh
+cd MNN/
+sudo apt-get install graphviz libprotobuf-dev protobuf-compiler
 ./schema/generate.sh
 mkdir build
 cd build
@@ -16,4 +14,4 @@ cd ..
 cd pymnn/pip_package/
 sudo python3 setup.py install
 sudo ldconfig
-
+```
