@@ -6,8 +6,8 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUWhere.hpp"
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUWhere.hpp"
+#include "CPUBackend.hpp"
 
 namespace MNN {
 
@@ -25,12 +25,14 @@ ErrorCode CPUWhere::onExecute(const std::vector<Tensor*>& inputs, const std::vec
     }
 
     // ob.dim[0].extent = (int)trueVec.size();
+    int k = 0;
     for (int i = 0; i < trueVec.size(); i++) {
         int index = trueVec[i];
         for (int j = 0; j < ib.dimensions; j++) {
             int result    = index / ib.dim[j].stride;
             index         = index - result * ib.dim[j].stride;
-            outputData[i * ib.dimensions + j] = result;
+            outputData[k] = result;
+            k++;
         }
     }
     int defaultValue = 0;
@@ -38,9 +40,7 @@ ErrorCode CPUWhere::onExecute(const std::vector<Tensor*>& inputs, const std::vec
         defaultValue = trueVec[0];
     }
     for (int i = (int)trueVec.size(); i < ob.dim[0].extent; ++i) {
-        for (int j = 0; j < ib.dimensions; j++) {
-            outputData[i * ib.dimensions + j] = defaultValue;
-        }
+        outputData[i] = defaultValue;
     }
 
     return NO_ERROR;

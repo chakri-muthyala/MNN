@@ -11,8 +11,8 @@
 
 #include <list>
 #include <map>
-#include "core/NonCopyable.hpp"
-#include "backend/opencl/core/runtime/OpenCLWrapper.hpp"
+#include "NonCopyable.hpp"
+#include "core/runtime/OpenCLWrapper.hpp"
 namespace MNN {
 namespace OpenCL {
 

@@ -6,7 +6,7 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opengl/GLContext.hpp"
+#include "GLContext.hpp"
 namespace MNN {
 namespace OpenGL {
     GLContext::GLContext() {

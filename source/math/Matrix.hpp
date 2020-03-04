@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include <memory>
-#include <MNN/Tensor.hpp>
+#include "Tensor.hpp"
 namespace MNN {
 namespace Math {
 class MNN_PUBLIC Matrix {

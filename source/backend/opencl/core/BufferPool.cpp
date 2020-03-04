@@ -6,7 +6,7 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opencl/core/BufferPool.hpp"
+#include "BufferPool.hpp"
 namespace MNN {
 namespace OpenCL {
 cl::Buffer* BufferPool::alloc(int size, bool seperate) {

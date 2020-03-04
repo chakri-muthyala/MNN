@@ -6,7 +6,7 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/MNNMemoryUtils.h"
+#include "MNNMemoryUtils.h"
 #include "MNNTestSuite.h"
 
 #ifndef MNN_DEBUG_MEMORY

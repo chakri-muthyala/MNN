@@ -1,6 +1,4 @@
 import os
-import sys
-major_py_ver = sys.version_info.major
 
 def convert_string_to_hex_list(code_str):
     hex_list = []
@@ -10,9 +8,8 @@ def convert_string_to_hex_list(code_str):
     return hex_list
 
 def opencl_codegen():
-    cl_kernel_dir = sys.argv[1]
-    output_path = sys.argv[2]
-    print("Generating OpenCL Kernels in "+cl_kernel_dir+" to "+output_path)
+    cl_kernel_dir = "./"
+    output_path = "./codegen/opencl_program.cc"
     if not os.path.exists(cl_kernel_dir):
         print(cl_kernel_dir + " doesn't exist!")
 
@@ -57,11 +54,7 @@ def opencl_codegen():
     opencl_source_map += "namespace MNN { \n"
     opencl_source_map += "extern const std::map<std::string, std::vector<unsigned char>> OpenCLProgramMap = \n { \n"
 
-    if major_py_ver == 2:
-        items = opencl_code_maps.iteritems()
-    else:
-        items = opencl_code_maps.items()
-    for file_name, file_source in items:
+    for file_name, file_source in opencl_code_maps.iteritems():
         opencl_source_map += "{\n \""
         opencl_source_map += file_name
         opencl_source_map += "\", \n"
@@ -82,3 +75,4 @@ def opencl_codegen():
 
 if __name__ == '__main__':
     opencl_codegen()
+

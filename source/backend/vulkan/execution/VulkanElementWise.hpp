@@ -10,7 +10,7 @@
 #define VulkanElementWise_hpp
 
 #include <stdio.h>
-#include "backend/vulkan/execution/VulkanBasicExecution.hpp"
+#include "VulkanBasicExecution.hpp"
 
 namespace MNN {
 class VulkanElementWise : public VulkanBasicExecution {

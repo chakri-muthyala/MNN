@@ -11,6 +11,8 @@
 #include <mutex>
 #include <string>
 
+#include "CONFIGURECONVERT.h"
+
 class ProjectConfig {
 public:
     static const std::string version;
@@ -51,7 +53,6 @@ public:
     MODEL_SOURCE model;
     bool benchmarkModel;
     bool saveHalfFloat;
-    bool forTraining = false;
 };
 
 #endif // CONFIG_HPP

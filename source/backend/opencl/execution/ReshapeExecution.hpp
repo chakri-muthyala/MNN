@@ -9,11 +9,11 @@
 #ifndef ReshapeExecution_hpp
 #define ReshapeExecution_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 #include <MNN_generated.h>
 #include <vector>
-#include "backend/opencl/core/OpenCLBackend.hpp"
+#include "core/OpenCLBackend.hpp"
 
 namespace MNN {
 namespace OpenCL {

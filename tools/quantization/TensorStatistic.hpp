@@ -8,7 +8,7 @@
 
 #include <memory>
 #include <vector>
-#include <MNN/Tensor.hpp>
+#include "Tensor.hpp"
 #include <string>
 
 enum GET_THRESHOLD_METHOD {

@@ -6,9 +6,9 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 #ifdef MNN_USE_THREAD_POOL
-#include "backend/cpu/ThreadPool.hpp"
+#include "ThreadPool.hpp"
 #include <string.h>
-#include <MNN/MNNDefine.h>
+#include "MNNDefine.h"
 #ifdef __ANDROID__
 #include <stdint.h>
 #include <sys/syscall.h>

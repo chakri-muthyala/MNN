@@ -15,27 +15,11 @@ MNN::OpType PadTf::opType() {
     return MNN::OpType_Padding;
 }
 MNN::OpParameter PadTf::type() {
-    return MNN::OpParameter_PadParam;
+    return MNN::OpParameter_NONE;
 }
 
 void PadTf::run(MNN::OpT *dstOp, TmpNode *srcNode) {
-    auto padparm = new MNN::PadParamT;
-
-    padparm->mode = MNN::PadValueMode_CONSTANT;
-    if (srcNode->opType == "MirrorPad") {
-        tensorflow::AttrValue value;
-        if (find_attr_value(srcNode->tfNode, "mode", value)) {
-            if (value.s() == "SYMMETRIC") {
-                padparm->mode = MNN::PadValueMode_SYMMETRIC;
-            } else if (value.s() == "REFLECT") {
-                padparm->mode = MNN::PadValueMode_REFLECT;
-            }
-        }
-    }
-
-    dstOp->main.value = padparm;
+    // Do nothing
 }
 
 REGISTER_CONVERTER(PadTf, Pad);
-REGISTER_CONVERTER(PadTf, PadV2);
-REGISTER_CONVERTER(PadTf, MirrorPad);

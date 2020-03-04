@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/compute/ResizeFunction.h"
+#include "ResizeFunction.h"
 #include <math.h>
-#include "core/AutoStorage.h"
-#include "core/Macro.h"
+#include "AutoStorage.h"
+#include "Macro.h"
 #ifdef MNN_USE_NEON
 #include <arm_neon.h>
 #endif

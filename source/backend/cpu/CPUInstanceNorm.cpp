@@ -6,13 +6,13 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUInstanceNorm.hpp"
+#include "CPUInstanceNorm.hpp"
 #include <math.h>
-#include "backend/cpu/CPUBackend.hpp"
-#include "core/Concurrency.h"
-#include <MNN/MNNDefine.h>
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "CPUBackend.hpp"
+#include "Concurrency.h"
+#include "MNNDefine.h"
+#include "Macro.h"
+#include "TensorUtils.hpp"
 
 #ifdef MNN_USE_NEON
 #include <arm_neon.h>
@@ -107,6 +107,6 @@ public:
     }
 };
 
-REGISTER_CPU_OP_CREATOR(CPUInstanceNormCreator, OpType_InstanceNorm);
+REGISTER_CPU_OP_CREATOR(CPUInstanceNormCreator, OpType_BatchNorm);
 
 } // namespace MNN

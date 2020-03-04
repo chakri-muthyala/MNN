@@ -9,7 +9,7 @@
 #ifndef CPUSlice_hpp
 #define CPUSlice_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUSlice : public Execution {

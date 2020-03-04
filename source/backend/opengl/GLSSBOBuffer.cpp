@@ -6,7 +6,7 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opengl/GLSSBOBuffer.hpp"
+#include "GLSSBOBuffer.hpp"
 namespace MNN {
 namespace OpenGL {
 GLSSBOBuffer::GLSSBOBuffer(GLsizeiptr size, GLenum type, GLenum usage) {

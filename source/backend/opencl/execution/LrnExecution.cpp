@@ -6,9 +6,9 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opencl/execution/LrnExecution.hpp"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "LrnExecution.hpp"
+#include <Macro.h>
+#include "TensorUtils.hpp"
 
 namespace MNN {
 namespace OpenCL {

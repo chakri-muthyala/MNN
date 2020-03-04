@@ -6,25 +6,18 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#if defined(_MSC_VER)
-#include <Windows.h>
-#undef min
-#undef max
-#else
-#include <unistd.h>
-#endif
-
 #include <stdio.h>
+#include <unistd.h>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <MNN/MNNDefine.h>
+#include "MNNDefine.h"
 #include "MNNTestSuite.h"
 #include "MNN_generated.h"
-#include "core/Pipeline.hpp"
-#include "core/Schedule.hpp"
-#include "core/Session.hpp"
-#include "core/TensorUtils.hpp"
+#include "Pipeline.hpp"
+#include "Schedule.hpp"
+#include "Session.hpp"
+#include "TensorUtils.hpp"
 #include "TestUtils.h"
 
 using namespace MNN;
@@ -52,7 +45,7 @@ public:
     FakeSession(const Schedule::ScheduleInfo& info) : Session(info) {
     }
 
-    const std::vector<std::shared_ptr<Pipeline>>& getFakePipelines() const {
+    const std::vector<std::unique_ptr<Pipeline>>& getFakePipelines() const {
         return this->getPipelines();
     }
 };
@@ -132,7 +125,7 @@ static Interpreter* createInterpreter(int b, int c, int h, int w, bool tensorflo
  * multi path expect A->B->C->D->X or X->A->B->C->D
  * */
 static void TestScheduleSpec() {
-    shared_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
+    unique_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
     ScheduleConfig conf;
     conf.path.inputs.push_back("A");
     conf.path.outputs.push_back("B");
@@ -144,7 +137,7 @@ static void TestScheduleSpec() {
     Session* session         = instance->createSession(conf);
     FakeSession* fakeSession = reinterpret_cast<FakeSession*>(session);
 
-    const std::vector<std::shared_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
     FakePipeline* fakePipeline                                = reinterpret_cast<FakePipeline*>(pipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& units = fakePipeline->getFakeUnit();
     stringstream ss;
@@ -183,7 +176,7 @@ static void TestScheduleSpec() {
 
     Session* sessionMulti                                        = instance->createMultiPathSession(configs);
     fakeSession                                                  = reinterpret_cast<FakeSession*>(sessionMulti);
-    const std::vector<std::shared_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
     fakePipeline = reinterpret_cast<FakePipeline*>(multiPipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& multiUnits = fakePipeline->getFakeUnit();
     FakePipeline* fakePipeline2 = reinterpret_cast<FakePipeline*>(multiPipelines[1].get());
@@ -224,7 +217,7 @@ static void TestScheduleSpec() {
  * multi path expect A->B->C->D->E->F
  * */
 static void TestSchedule() {
-    shared_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
+    unique_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
     ScheduleConfig conf;
     conf.path.inputs.push_back("A");
     conf.path.outputs.push_back("B");
@@ -236,7 +229,7 @@ static void TestSchedule() {
     Session* session         = instance->createSession(conf);
     FakeSession* fakeSession = reinterpret_cast<FakeSession*>(session);
 
-    const std::vector<std::shared_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
     FakePipeline* fakePipeline                                = reinterpret_cast<FakePipeline*>(pipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& units = fakePipeline->getFakeUnit();
     stringstream ss;
@@ -272,7 +265,7 @@ static void TestSchedule() {
 
     Session* sessionMulti                                        = instance->createMultiPathSession(configs);
     fakeSession                                                  = reinterpret_cast<FakeSession*>(sessionMulti);
-    const std::vector<std::shared_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
     fakePipeline = reinterpret_cast<FakePipeline*>(multiPipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& multiUnits = fakePipeline->getFakeUnit();
     FakePipeline* fakePipeline2 = reinterpret_cast<FakePipeline*>(multiPipelines[1].get());
@@ -311,14 +304,14 @@ static void TestSchedule() {
  * multi path expect A->B->C->D->E->F
  */
 static void TestScheduleOneInputHaveBeginNoEnd() {
-    shared_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
+    unique_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
     ScheduleConfig conf;
     conf.path.inputs.push_back("A");
 
     Session* session         = instance->createSession(conf);
     FakeSession* fakeSession = reinterpret_cast<FakeSession*>(session);
 
-    const std::vector<std::shared_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
     FakePipeline* fakePipeline                                = reinterpret_cast<FakePipeline*>(pipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& units = fakePipeline->getFakeUnit();
     stringstream ss;
@@ -345,7 +338,7 @@ static void TestScheduleOneInputHaveBeginNoEnd() {
 
     Session* sessionMulti                                        = instance->createMultiPathSession(configs);
     fakeSession                                                  = reinterpret_cast<FakeSession*>(sessionMulti);
-    const std::vector<std::shared_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
     fakePipeline = reinterpret_cast<FakePipeline*>(multiPipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& multiUnits = fakePipeline->getFakeUnit();
     ss.str("");
@@ -369,7 +362,7 @@ static void TestScheduleOneInputHaveBeginNoEnd() {
  * multi path expect A->B->C->D->E->F
  */
 static void TestScheduleMultiInputsHaveBeginNoEnd() {
-    shared_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
+    unique_ptr<Interpreter> instance(createInterpreter(0, 0, 0, 0, false));
     ScheduleConfig conf;
     conf.path.inputs.push_back("A");
     conf.path.inputs.push_back("D");
@@ -377,7 +370,7 @@ static void TestScheduleMultiInputsHaveBeginNoEnd() {
     Session* session         = instance->createSession(conf);
     FakeSession* fakeSession = reinterpret_cast<FakeSession*>(session);
 
-    const std::vector<std::shared_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& pipelines   = fakeSession->getFakePipelines();
     FakePipeline* fakePipeline                                = reinterpret_cast<FakePipeline*>(pipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& units = fakePipeline->getFakeUnit();
     stringstream ss;
@@ -405,7 +398,7 @@ static void TestScheduleMultiInputsHaveBeginNoEnd() {
 
     Session* sessionMulti                                        = instance->createMultiPathSession(configs);
     fakeSession                                                  = reinterpret_cast<FakeSession*>(sessionMulti);
-    const std::vector<std::shared_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
+    const std::vector<std::unique_ptr<Pipeline>>& multiPipelines = fakeSession->getFakePipelines();
     fakePipeline = reinterpret_cast<FakePipeline*>(multiPipelines[0].get());
     const std::vector<std::shared_ptr<Pipeline::Unit>>& multiUnits = fakePipeline->getFakeUnit();
     ss.str("");
@@ -500,13 +493,13 @@ static MNN::Tensor* createTensor(const MNN::Tensor* shape, const char* path) {
 }
 
 static void TestSqueezeNet() {
-    const shared_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
+    const unique_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
     ScheduleConfig config;
     config.type      = MNN_FORWARD_CPU;
     Session* session = net->createSession(config);
 
     Tensor* inputTensor = net->getSessionInput(session, NULL);
-    const shared_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
+    const unique_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
     if (!givenTensor) {
         MNN_ERROR("[FAIL] TestSqueezeNetFailed to open input file %s.\n", input_file.c_str());
         return;
@@ -514,7 +507,7 @@ static void TestSqueezeNet() {
     net->getBackend(session, inputTensor)->onCopyBuffer(givenTensor.get(), inputTensor);
 
     Tensor* outputTensor = net->getSessionOutput(session, NULL);
-    shared_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
+    unique_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
     if (!expectTensor.get()) {
         MNN_ERROR("[FAIL] TestSqueezeNetFailed to open output file %s.\n", input_file.c_str());
         return;
@@ -530,14 +523,14 @@ static void TestSqueezeNet() {
 }
 
 static void TestSqueezeNetOnePath() {
-    const shared_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
+    const unique_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
     ScheduleConfig config;
     config.type = MNN_FORWARD_CPU;
     config.path.inputs.push_back("conv1");
     Session* session = net->createSession(config);
 
     Tensor* inputTensor = net->getSessionInput(session, NULL);
-    const shared_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
+    const unique_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
     if (!givenTensor) {
         MNN_ERROR("[FAIL] TestSqueezeNetOnePath to open input file %s.\n", input_file.c_str());
         return;
@@ -545,7 +538,7 @@ static void TestSqueezeNetOnePath() {
     net->getBackend(session, inputTensor)->onCopyBuffer(givenTensor.get(), inputTensor);
 
     Tensor* outputTensor = net->getSessionOutput(session, NULL);
-    shared_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
+    unique_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
     if (!expectTensor.get()) {
         MNN_ERROR("[FAIL] TestSqueezeNetOnePath to open output file %s.\n", input_file.c_str());
         return;
@@ -561,7 +554,7 @@ static void TestSqueezeNetOnePath() {
 }
 
 static void TestSqueezeNetOnePathFailed() {
-    const shared_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
+    const unique_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
     ScheduleConfig config;
     config.type = MNN_FORWARD_CPU;
     config.path.inputs.push_back("conv1");
@@ -569,7 +562,7 @@ static void TestSqueezeNetOnePathFailed() {
     Session* session = net->createSession(config);
 
     Tensor* inputTensor = net->getSessionInput(session, NULL);
-    const shared_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
+    const unique_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
     if (!givenTensor) {
         MNN_ERROR("[FAIL] TestSqueezeNetOnePathFailed to open input file %s.\n", input_file.c_str());
         return;
@@ -577,7 +570,7 @@ static void TestSqueezeNetOnePathFailed() {
     net->getBackend(session, inputTensor)->onCopyBuffer(givenTensor.get(), inputTensor);
 
     Tensor* outputTensor = net->getSessionOutput(session, NULL);
-    shared_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
+    unique_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
     if (!expectTensor.get()) {
         MNN_ERROR("[FAIL] TestSqueezeNetOnePathFailed to open output file %s.\n", input_file.c_str());
         return;
@@ -593,7 +586,7 @@ static void TestSqueezeNetOnePathFailed() {
 }
 
 static void TestScheduleSqueezeNetMultiPathFailed() {
-    const shared_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
+    const unique_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
 
     ScheduleConfig conf1;
     conf1.type = MNN_FORWARD_CPU;
@@ -610,7 +603,7 @@ static void TestScheduleSqueezeNetMultiPathFailed() {
     Session* session = net->createMultiPathSession(configs);
 
     Tensor* inputTensor = net->getSessionInput(session, NULL);
-    const shared_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
+    const unique_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
     if (!givenTensor) {
         MNN_ERROR("[FAIL] TestScheduleSqueezeNetMultiPathFailed to open input file %s.\n", input_file.c_str());
         return;
@@ -618,7 +611,7 @@ static void TestScheduleSqueezeNetMultiPathFailed() {
     net->getBackend(session, inputTensor)->onCopyBuffer(givenTensor.get(), inputTensor);
 
     Tensor* outputTensor = net->getSessionOutput(session, NULL);
-    const shared_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
+    const unique_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
     if (!expectTensor.get()) {
         MNN_ERROR("[FAIL] TestScheduleSqueezeNetMultiPathFailed to open output file %s.\n", input_file.c_str());
         return;
@@ -634,7 +627,7 @@ static void TestScheduleSqueezeNetMultiPathFailed() {
 }
 
 static void TestScheduleSqueezeNetMultiPath() {
-    const shared_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
+    const unique_ptr<Interpreter> net(Interpreter::createFromFile(model_file.c_str()));
 
     ScheduleConfig conf1;
     conf1.type = MNN_FORWARD_CPU;
@@ -650,7 +643,7 @@ static void TestScheduleSqueezeNetMultiPath() {
     Session* session = net->createMultiPathSession(configs);
 
     Tensor* inputTensor = net->getSessionInput(session, NULL);
-    const shared_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
+    const unique_ptr<Tensor> givenTensor(createTensor(inputTensor, input_file.c_str()));
     if (!givenTensor) {
         MNN_ERROR("[FAIL] TestSqueezeNetFailed to open input file %s.\n", input_file.c_str());
         return;
@@ -658,7 +651,7 @@ static void TestScheduleSqueezeNetMultiPath() {
     net->getBackend(session, inputTensor)->onCopyBuffer(givenTensor.get(), inputTensor);
 
     Tensor* outputTensor = net->getSessionOutput(session, NULL);
-    const shared_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
+    const unique_ptr<Tensor> expectTensor(createTensor(outputTensor, output_file.c_str()));
     if (!expectTensor.get()) {
         MNN_ERROR("[FAIL] TestSqueezeNetFailed to open output file %s.\n", input_file.c_str());
         return;
@@ -690,17 +683,10 @@ bool ScheduleTest::run() {
     bool squeezeNetCont = true;
     string path_join    = "../";
     string path         = path_join + const_model_file;
-#if defined(_MSC_VER)
-    if (INVALID_FILE_ATTRIBUTES != GetFileAttributes(path.c_str()) && GetLastError() != ERROR_FILE_NOT_FOUND) {
+    if (-1 == access(path.c_str(), 0)) {
         path_join = "./";
         path      = path_join + const_model_file;
-        if (INVALID_FILE_ATTRIBUTES != GetFileAttributes(path.c_str()) && GetLastError() != ERROR_FILE_NOT_FOUND) {
-#else
-    if (-1 == access(path.c_str(), F_OK)) {
-        path_join = "./";
-        path      = path_join + const_model_file;
-        if (-1 == access(path.c_str(), F_OK)) {
-#endif
+        if (-1 == access(path.c_str(), 0)) {
             squeezeNetCont = false;
             MNN_ERROR("[FAIL] TestSqueezeNet %s fail to run.Model file not found\n", const_model_file.c_str());
         }

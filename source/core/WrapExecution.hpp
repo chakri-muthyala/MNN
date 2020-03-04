@@ -11,9 +11,9 @@
 
 #include <stdio.h>
 #include <memory>
-#include "core/Backend.hpp"
-#include "core/Execution.hpp"
-#include "core/Macro.h"
+#include "Backend.hpp"
+#include "Execution.hpp"
+#include "Macro.h"
 
 namespace MNN {
 

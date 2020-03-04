@@ -9,7 +9,7 @@
 #ifndef ConvolutionDepthwise3x3_hpp
 #define ConvolutionDepthwise3x3_hpp
 
-#include "backend/cpu/CPUConvolution.hpp"
+#include "CPUConvolution.hpp"
 
 namespace MNN {
 class ConvolutionDepthwise3x3 : public CPUConvolution {

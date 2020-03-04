@@ -9,7 +9,7 @@
 #ifndef CPUTile_hpp
 #define CPUTile_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUTile : public Execution {

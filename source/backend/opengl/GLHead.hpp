@@ -28,7 +28,7 @@
 #include <GL/glew.h>
 #endif
 #endif
-#include "backend/opengl/GLDebug.hpp"
+#include "GLDebug.hpp"
 #define OPENGL_ASSERT(x) assert(x)
 
 #endif

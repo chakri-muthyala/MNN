@@ -9,7 +9,7 @@
 #ifndef CPUConvolution_hpp
 #define CPUConvolution_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 #include "MNN_generated.h"
 
 namespace MNN {

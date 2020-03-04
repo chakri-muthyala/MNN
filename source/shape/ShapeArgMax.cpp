@@ -6,8 +6,8 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
+#include "Macro.h"
+#include "SizeComputer.hpp"
 
 namespace MNN {
 
@@ -30,9 +30,12 @@ class ArgMaxComputer : public SizeComputer {
 
         const auto inputDimensionFormat = TensorUtils::getDescribe(inputs[0])->dimensionFormat;
 
+        // Argmax can accept intput dimension-format:NC4HW4/NHWC NOW!
+        MNN_ASSERT(inputDimensionFormat == MNN_DATA_FORMAT_NHWC || inputDimensionFormat == MNN_DATA_FORMAT_NC4HW4);
+
         TensorUtils::getDescribe(outputs[0])->dimensionFormat = inputDimensionFormat;
 
-        if (inputDimensionFormat != MNN_DATA_FORMAT_NC4HW4) {
+        if (inputDimensionFormat == MNN_DATA_FORMAT_NHWC) {
             int axis = argMax->axis();
             if(axis < 0){
                 axis = input.dimensions + axis;
@@ -52,7 +55,6 @@ class ArgMaxComputer : public SizeComputer {
         } else {
             // Legacy code
             // key extent
-            output.type = halide_type_of<float>();
             int keyExtent = argMax->topK();
             if (argMax->outMaxVal()) {
                 keyExtent *= 2;
@@ -72,6 +74,5 @@ class ArgMaxComputer : public SizeComputer {
 };
 
 REGISTER_SHAPE(ArgMaxComputer, OpType_ArgMax);
-REGISTER_SHAPE(ArgMaxComputer, OpType_ArgMin);
 
 } // namespace MNN

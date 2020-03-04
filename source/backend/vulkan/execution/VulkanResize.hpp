@@ -8,7 +8,7 @@
 
 #ifndef VulkanResize_hpp
 #define VulkanResize_hpp
-#include "backend/vulkan/execution/VulkanBasicExecution.hpp"
+#include "VulkanBasicExecution.hpp"
 
 namespace MNN {
 class VulkanResize : public VulkanBasicExecution {

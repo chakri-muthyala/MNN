@@ -10,7 +10,7 @@
 #define CPUBatchToSpaceND_hpp
 
 #include <functional>
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 namespace MNN {
 
 class CPUBatchToSpaceND : public Execution {

@@ -6,16 +6,18 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/Session.hpp"
+#include "Session.hpp"
 #include <string.h>
 #include <map>
 #include <set>
-#include "core/AutoStorage.h"
-#include <MNN/AutoTime.hpp>
-#include "core/BackendFactory.hpp"
+#include "AutoStorage.h"
+#include "AutoTime.hpp"
+#include "BackendFactory.hpp"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
 #include "MNN_generated.h"
-#include "core/TensorUtils.hpp"
-#include "core/WrapExecution.hpp"
+#include "TensorUtils.hpp"
+#include "WrapExecution.hpp"
 
 using namespace std;
 
@@ -51,11 +53,14 @@ Session::Session(const Schedule::ScheduleInfo& info) {
         }
         auto backend    = mBackends.find(iter.first.type)->second.get();
         auto cpuBackend = _getDefaultBackend();
-        std::shared_ptr<Pipeline> newPipeline(new Pipeline(iter.second, backend, cpuBackend));
+        std::unique_ptr<Pipeline> newPipeline(new Pipeline(iter.second, backend, cpuBackend));
         mPipelines.emplace_back(std::move(newPipeline));
     }
     mInputs  = info.inputTensors;
     mOutputs = info.outputTensor;
+    for (auto& iter : mInputs) {
+        TensorUtils::getDescribe(iter.second)->isInput = true;
+    }
 }
 
 Session::~Session() {
@@ -182,10 +187,7 @@ ErrorCode Session::updateToModel(Net* net) const {
     int opSize = net->oplists()->size();
     for (int i = 0; i < opSize; ++i) {
         auto op = net->oplists()->GetAs<Op>(i);
-        if (net->usage() == Usage_INFERENCE && op->type() != OpType_Const) {
-            continue;
-        }
-        if (net->usage() == Usage_TRAIN && op->type() != OpType_TrainableParam) {
+        if (op->type() != OpType_Const) {
             continue;
         }
         if (!op->outputIndexes() || op->outputIndexes()->size() != 1) {
@@ -196,15 +198,8 @@ ErrorCode Session::updateToModel(Net* net) const {
         if (blob->dataType() != DataType_DT_FLOAT) {
             continue;
         }
-        std::shared_ptr<Tensor> tensor = mTensors[index].second;
-        if (tensor->host<void>() == nullptr && tensor->deviceId() != 0) {
-            tensor.reset(Tensor::createHostTensorFromDevice(tensor.get(), true));
-            if (tensor.get() == nullptr) {
-                MNN_ERROR("failed to copy trained param from device to host\n");
-                return INVALID_VALUE;
-            }
-        }
-        ::memcpy((void*)blob->float32s()->data(), tensor->host<float>(), tensor->size());
+        ::memcpy((void*)blob->float32s()->data(), mTensors[index].second->host<float>(),
+                 mTensors[index].second->size());
     }
 
     return NO_ERROR;

@@ -15,10 +15,9 @@
 #include <thread>
 #include <vector>
 #include <atomic>
-#include <MNN/MNNDefine.h>
 namespace MNN {
 
-class MNN_PUBLIC ThreadPool {
+class ThreadPool {
 public:
     typedef std::pair<std::function<void(int)>, int> TASK;
 

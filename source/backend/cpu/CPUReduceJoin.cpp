@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUReduceJoin.hpp"
-#include "core/AutoStorage.h"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "CPUReduceJoin.hpp"
+#include "AutoStorage.h"
+#include "Macro.h"
+#include "TensorUtils.hpp"
 
 namespace MNN {
 

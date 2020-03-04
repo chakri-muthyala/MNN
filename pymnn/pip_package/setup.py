@@ -12,7 +12,7 @@ from distutils.errors import DistutilsArgError
 IS_WINDOWS = (platform.system() == 'Windows')
 IS_DARWIN = (platform.system() == 'Darwin')
 IS_LINUX = (platform.system() == 'Linux')
-BUILD_DIR = 'pymnn_build'
+BUILD_DIR = 'build'
 BUILD_TYPE = 'RELEASE'
 def check_env_flag(name, default=''):
     """ check whether a env is set to Yes """
@@ -23,7 +23,7 @@ def report(*args):
     print(*args)
 
 package_name = os.getenv('MNN_PACKAGE_NAME', 'MNN')
-version = '0.0.8'
+version = '0.0.7'
 depend_pip_packages = ['flatbuffers', 'pydot_ng', 'graphviz']
 README = os.path.join(os.getcwd(), "README.md")
 with open(README) as f:
@@ -95,9 +95,23 @@ def configure_extension_build():
     tools_compile_args = []
     tools_libraries = []
     tools_library_dirs = [os.path.join(root_dir, BUILD_DIR)]
+    tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "express")]
     tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "tools", "converter")]
+    tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "tools", "converter",\
+                                       "source", "tflite")]
+    tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "tools", "converter",\
+                                       "source", "onnx")]
+    tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "tools", "converter",\
+                                       "source", "optimizer")]
+    tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "tools", "converter",\
+                                       "source", "MNN")]
+    tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "tools", "converter",\
+                                       "source", "caffe")]
+    tools_library_dirs += [os.path.join(root_dir, BUILD_DIR, "tools", "converter",\
+                                       "source", "tensorflow")]
     tools_link_args = []
-    tools_sources = [os.path.join(root_dir, "pymnn", "src", "MNNTools.cc")]
+    tools_sources = []
+    #tools_sources = [os.path.join(root_dir, "pymnn", "src", "MNNTools.cc")]
     tools_sources += [os.path.join(root_dir, "tools", "quantization",\
                                      "calibration.cpp")]
     tools_sources += [os.path.join(root_dir, "tools", "quantization",\
@@ -108,7 +122,7 @@ def configure_extension_build():
     tools_include_dirs = [os.path.join(root_dir, "tools", "converter",\
                                        "source", "IR")]
     tools_include_dirs += [os.path.join(root_dir, "tools", "converter",\
-                                       "include")]
+                                       "source", "include")]
     tools_include_dirs += [os.path.join(root_dir, "tools", "converter",\
                                        "source", "tflite", "schema")]
     tools_include_dirs += [os.path.join(root_dir, "tools", "converter", "source")]
@@ -121,9 +135,11 @@ def configure_extension_build():
     tools_include_dirs += [os.path.join(root_dir, "3rd_party")]
     tools_include_dirs += [os.path.join(root_dir, "3rd_party", "imageHelper")]
     tools_include_dirs += [os.path.join(root_dir, "source", "core")]
+    #custom
     tools_include_dirs += [os.path.join(root_dir, "schema", "current")]
-    tools_include_dirs += [os.path.join(root_dir, "source")]
-    tools_depend = ['-lMNN', '-lMNNConvertDeps']
+
+    tools_depend = ['-lCOMMON_LIB', '-ltflite', '-lonnx', '-loptimizer',\
+                       '-lMNN', '-lMNN_Express', '-lmnn_bizcode', '-lcaffe', '-ltensorflow']
     engine_extra_link_args = []
     tools_extra_link_args = []
     if IS_DARWIN:
@@ -156,7 +172,7 @@ def configure_extension_build():
         tools_extra_link_args += ['/WHOLEARCHIVE:mnn_bizcode.lib']
         tools_extra_link_args += ['/WHOLEARCHIVE:caffe.lib']
         tools_extra_link_args += ['/WHOLEARCHIVE:tensorflow.lib']
-        tools_extra_link_args += ['C:\\Users\\tianhang.yth\\Desktop\\protobuf\\vsprojects\\Release\\libprotobuf.lib']
+        tools_extra_link_args += ['C:\\protobuf\\vsprojects\\Release\\libprotobuf.lib']
 
     if BUILD_TYPE == 'DEBUG':
         if IS_WINDOWS:
@@ -197,16 +213,6 @@ def configure_extension_build():
                     extra_link_args=engine_extra_link_args + engine_link_args\
                         + [make_relative_rpath('lib')])
     extensions.append(MNN)
-    Tools = Extension("Tools",\
-                    libraries=tools_libraries,\
-                    sources=tools_sources,\
-                    language='c++',\
-                    extra_compile_args=tools_compile_args + extra_compile_args,\
-                    include_dirs=tools_include_dirs,\
-                    library_dirs=tools_library_dirs,\
-                    extra_link_args=tools_extra_link_args +tools_link_args\
-                        + [make_relative_rpath('lib')])
-    extensions.append(Tools)
     # These extensions are built by cmake and copied manually in build_extensions()
     # inside the build_ext implementaiton
 

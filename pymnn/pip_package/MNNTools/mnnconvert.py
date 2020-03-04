@@ -13,7 +13,8 @@ def usage():
     print("    [--modelFile MODELFILE]")
     print("    [--prototxt PROTOTXT]")
     print("    [--MNNModel MNNMODEL]")
-    print("    [--fp16 {True,False}]") 
+    print("    [--benchmarkModel {True,False}]")
+    print("    [--bizCode BIZCODE]")
 
 def main():
     """ main funcion """
@@ -28,10 +29,12 @@ def main():
         help="only used for caffe, for example: xxx.prototxt")
     parser.add_argument("--MNNModel", type=str, required=True,\
         help="MNN model, ex: xxx.mnn")
-    parser.add_argument("--fp16", type=bool, default=False,\
+    parser.add_argument("--benchmarkModel", type=bool, default=False,\
         help="{True,False}\
                Boolean to change the mnn usage. If True, the output\
-               model save data in half_float type")
+               model can only be used in benchmark mode")
+    parser.add_argument("--bizCode", type=str, default='MNN',\
+        help="MNN Model Flag, for example: MNN")
     TF = 0
     CAFFE = 1
     ONNX = 2
@@ -66,7 +69,7 @@ def main():
         ### just cheat with a not exist name ###
         args.prototxt = "NA.mnn"
     Tools.mnnconvert(args.MNNModel, args. modelFile, framework_type,\
-        args.fp16, args.prototxt)
+        args.bizCode, args.benchmarkModel, args.prototxt)
     return 0
 if __name__ == "__main__":
     main()

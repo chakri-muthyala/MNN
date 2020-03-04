@@ -7,7 +7,7 @@
 //
 
 #include "MNNTestSuite.h"
-#include <MNN/Matrix.h>
+#include "Matrix.h"
 
 using namespace MNN::CV;
 

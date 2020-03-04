@@ -6,14 +6,14 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/Pipeline.hpp"
-#include "core/Backend.hpp"
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
-#include "core/TensorUtils.hpp"
-#include "core/WrapExecution.hpp"
+#include "Pipeline.hpp"
+#include "Backend.hpp"
+#include "Macro.h"
+#include "SizeComputer.hpp"
+#include "TensorUtils.hpp"
+#include "WrapExecution.hpp"
 //#define MNN_OPEN_TIME_TRACE
-#include <MNN/AutoTime.hpp>
+#include "AutoTime.hpp"
 //#define MNN_DEBUG_TENSOR_SIZE
 namespace MNN {
 OperatorInfo::OperatorInfo() {
@@ -38,8 +38,7 @@ float OperatorInfo::flops() const {
 
 static Backend::StorageType _getTensorStorageType(const Tensor* tensor) {
     auto des = TensorUtils::getDescribe(tensor);
-    auto usage = des->usage;
-    if (TensorUsage::CONST == usage || TensorUsage::INPUT == usage || TensorUsage::TRAINABLE == usage) {
+    if (des->isConst || des->isInput) {
         return Backend::DYNAMIC_SEPERATE;
     }
     if (des->handleType != Tensor::HANDLE_NONE) {
@@ -50,11 +49,10 @@ static Backend::StorageType _getTensorStorageType(const Tensor* tensor) {
 
 static Backend::StorageType _getTensorReleaseStorageType(const Tensor* tensor) {
     auto des = TensorUtils::getDescribe(tensor);
-    auto usage = des->usage;
     if (des->handleType != Tensor::HANDLE_NONE) {
         return Backend::DYNAMIC_SEPERATE;
     }
-    if (TensorUsage::CONST == usage || TensorUsage::TRAINABLE == usage) {
+    if (des->isConst) {
         return Backend::DYNAMIC_SEPERATE;
     }
     return Backend::DYNAMIC;
@@ -219,21 +217,15 @@ ErrorCode Pipeline::Unit::prepare(Backend* bn, Backend* cpuBn) {
     // Check const
     mConst = true;
     for (int i = 0; i < mInputs.size(); ++i) {
-        if (SizeComputer::opNeedContent(mOriginOp->type(), i) && (TensorUtils::getDescribe(mInputs[i])->usage != TensorUsage::CONST)) {
+        if (SizeComputer::opNeedContent(mOriginOp->type(), i) && (!TensorUtils::getDescribe(mInputs[i])->isConst)) {
             mConst = false;
             break;
         }
     }
-    if (mType == OpType_TrainableParam) {
-        for (auto t : mOutputs) {
-            TensorUtils::getDescribe(t)->usage = TensorUsage::TRAINABLE;
-        }
-        mConst = false;
-    }
 
     if (mConst) {
         for (auto t : mOutputs) {
-            TensorUtils::getDescribe(t)->usage = TensorUsage::CONST;
+            TensorUtils::getDescribe(t)->isConst = true;
         }
         bn = cpuBn;
     }
@@ -317,8 +309,7 @@ ErrorCode Pipeline::prepare() {
 
 ErrorCode Pipeline::execute() {
     mBackend->onExecuteBegin();
-    for (int i=0; i<mUnits.size(); ++i) {
-        auto& u = mUnits[i];
+    for (auto& u : mUnits) {
         auto code = u->execute();
         if (code != NO_ERROR) {
             mBackend->onExecuteEnd();

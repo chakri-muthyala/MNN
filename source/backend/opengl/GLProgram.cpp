@@ -6,11 +6,11 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opengl/GLProgram.hpp"
+#include "GLProgram.hpp"
 #include <string.h>
 #include <fstream>
 #include <sstream>
-#include "backend/opengl/GLDebug.hpp"
+#include "GLDebug.hpp"
 using namespace std;
 
 namespace MNN {

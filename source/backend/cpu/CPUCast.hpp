@@ -9,7 +9,7 @@
 #ifndef CPUCast_hpp
 #define CPUCast_hpp
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 
 namespace MNN {
 class CPUCastCreator : public CPUBackend::Creator {

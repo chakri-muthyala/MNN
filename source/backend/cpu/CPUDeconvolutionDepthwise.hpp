@@ -9,7 +9,7 @@
 #ifndef CPUDeconvolutionDepthwise_hpp
 #define CPUDeconvolutionDepthwise_hpp
 
-#include "backend/cpu/CPUDeconvolution.hpp"
+#include "CPUDeconvolution.hpp"
 
 namespace MNN {
 class CPUDeconvolutionDepthwiseBasic : public CPUDeconvolutionBasic {
@@ -22,7 +22,7 @@ public:
     virtual ErrorCode onExecute(const std::vector<Tensor *> &inputs, const std::vector<Tensor *> &outputs) override;
 
 private:
-    std::function<void(const float *, float *, int)> mFunction;
+    std::function<void(const float *, float *)> mFunction;
 };
 
 class CPUDeconvolutionDepthwiseMultiInput : public CPUDeconvolutionDepthwiseBasic {

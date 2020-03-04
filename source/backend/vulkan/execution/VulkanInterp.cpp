@@ -6,7 +6,7 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/execution/VulkanInterp.hpp"
+#include "VulkanInterp.hpp"
 
 namespace MNN {
 

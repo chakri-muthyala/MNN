@@ -9,15 +9,16 @@
 #ifndef CPUTensorConvert_hpp
 #define CPUTensorConvert_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 #include "Tensor_generated.h"
 
 namespace MNN {
 
 class CPUTensorConverter : public Execution {
 public:
-    CPUTensorConverter(Backend* b) : Execution(b) {
-        // Do nothing
+    CPUTensorConverter(Backend* b, MNN_DATA_FORMAT source, MNN_DATA_FORMAT dest) : Execution(b) {
+        mSource = source;
+        mDest   = dest;
     }
     virtual ~CPUTensorConverter() = default;
 
@@ -28,6 +29,10 @@ public:
 
     static ErrorCode convert(const Tensor* input, const Tensor* output);
     virtual ErrorCode onExecute(const std::vector<Tensor*>& inputs, const std::vector<Tensor*>& outputs) override;
+
+private:
+    MNN_DATA_FORMAT mSource;
+    MNN_DATA_FORMAT mDest;
 };
 
 } // namespace MNN

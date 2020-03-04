@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUBatchToSpaceND.hpp"
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
+#include "CPUBatchToSpaceND.hpp"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
 
 namespace MNN {
 

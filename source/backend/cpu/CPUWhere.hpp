@@ -9,7 +9,7 @@
 #ifndef CPUWhere_hpp
 #define CPUWhere_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUWhere : public Execution {

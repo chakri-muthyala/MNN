@@ -8,8 +8,8 @@
 
 #include <math.h>
 
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
+#include "Macro.h"
+#include "SizeComputer.hpp"
 
 namespace MNN {
 class Pool3DSizeComputer : public SizeComputer {
@@ -36,7 +36,7 @@ public:
             
             if (layer->padType() == PoolPadType_CAFFE) {
                 int pad = (*layer->pads())[i];
-                outputLength = (inputLength + 2 * pad - kernel) / stride + 1;
+                outputLength = UP_DIV(inputLength + 2 * pad - kernel, stride) + 1;
             } else if (layer->padType() == PoolPadType_SAME) {
                 outputLength = UP_DIV(inputLength, stride);
             } else if (layer->padType() == PoolPadType_VALID) {

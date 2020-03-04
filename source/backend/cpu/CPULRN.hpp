@@ -9,7 +9,7 @@
 #ifndef CPULRN_hpp
 #define CPULRN_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 

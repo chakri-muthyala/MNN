@@ -8,7 +8,7 @@
 
 #ifndef VulkanLSTM_hpp
 #define VulkanLSTM_hpp
-#include "backend/vulkan/execution/VulkanBasicExecution.hpp"
+#include "VulkanBasicExecution.hpp"
 
 namespace MNN {
 

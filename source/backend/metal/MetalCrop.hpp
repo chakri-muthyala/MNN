@@ -9,7 +9,7 @@
 #ifndef MetalCrop_hpp
 #define MetalCrop_hpp
 
-#import "core/Execution.hpp"
+#import "Execution.hpp"
 #import "MNN_generated.h"
 #import "MetalDefine.h"
 

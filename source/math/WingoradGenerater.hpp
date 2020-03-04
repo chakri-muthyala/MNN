@@ -9,7 +9,7 @@
 #ifndef WingoradGenerater_hpp
 #define WingoradGenerater_hpp
 #include <memory>
-#include "math/Matrix.hpp"
+#include "Matrix.hpp"
 namespace MNN {
 namespace Math {
 class MNN_PUBLIC WinogradGenerater {

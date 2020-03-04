@@ -6,15 +6,15 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUEltwise.hpp"
+#include "CPUEltwise.hpp"
 #include <math.h>
 #include <string.h>
-#include "core/Concurrency.h"
+#include "Concurrency.h"
 #include <algorithm>
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "backend/cpu/compute/ConvOpt.h"
-#include "core/Macro.h"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "ConvOpt.h"
+#include "Macro.h"
 #ifdef MNN_USE_NEON
 #include <arm_neon.h>
 #endif
@@ -35,6 +35,7 @@ ErrorCode CPUEltwise::onExecute(const std::vector<Tensor *> &inputs, const std::
     auto outputTensor    = outputs[0];
     auto outputHost      = outputTensor->host<float>();
     const auto input0Ptr = inputs[0]->host<float>();
+    auto numberThread = ((CPUBackend*)backend())->threadNumber();
 
     auto coeffSize = mCoeff.size();
     bool isIdentity     = coeffSize >= 2;
@@ -66,10 +67,12 @@ ErrorCode CPUEltwise::onExecute(const std::vector<Tensor *> &inputs, const std::
             MNN_ERROR("Don't support %d type for eltwise", mType);
             return INPUT_DATA_ERROR;
     }
-    auto schedule = ((CPUBackend*)backend())->multiThreadDivide(size);
-    int sizeDivide = schedule.first;
-    int scheduleNumber = schedule.second;
-
+    int sizeDivide = size / numberThread;
+    sizeDivide = UP_DIV(sizeDivide, 4) * 4;
+    int scheduleNumber = 1;
+    if (sizeDivide > 0) {
+        scheduleNumber = UP_DIV(size, sizeDivide);
+    }
     MNN_CONCURRENCY_BEGIN(tId, scheduleNumber) {
         int start = sizeDivide * (int)tId;
         int realSize = sizeDivide;

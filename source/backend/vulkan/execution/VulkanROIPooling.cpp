@@ -6,8 +6,8 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/execution/VulkanROIPooling.hpp"
-#include "core/Macro.h"
+#include "VulkanROIPooling.hpp"
+#include "Macro.h"
 
 namespace MNN {
 struct GpuParam {

@@ -20,10 +20,6 @@ enum BinaryOpOperation : byte {
     EQUAL = 15,
     LESS_EQUAL = 16,
     FLOORMOD = 17,
-    MOD = 19,
-    ATAN2 = 20,
-    LOGICALOR = 21,
-    NOTEQUAL = 22,
 }
 
 table BinaryOp {
@@ -125,18 +121,6 @@ enum UnaryOpOperation : int {
     ATAN = 14,
     RECIPROCAL = 15,
     LOG1P = 16,
-    BNLL = 17,
-    ACOSH = 18,
-    SINH = 19,
-    ASINH = 20,
-    ATANH = 21,
-    SIGN = 22,
-    ROUND = 23,
-    COSH = 24,
-    ERF = 25,
-    ERFC = 26,
-    ERFINV = 27,
-    EXPM1 = 28,
 }
 
 table UnaryOp {
@@ -260,19 +244,4 @@ table DetectionPostProcessParam{
     // y_scale, x_scale, h_scale, w_scale
     // always size == 4
     centerSizeEncoding:[float];
-}
-
-table OneHotParam{
-    dType:DataType=DT_FLOAT;
-    axis:int=-1;
-}
-
-enum PadValueMode : byte{
-    CONSTANT = 0,
-    REFLECT = 1,
-    SYMMETRIC = 2
-}
-
-table PadParam{
-    mode: PadValueMode = CONSTANT;
 }

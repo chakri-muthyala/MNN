@@ -9,7 +9,7 @@
 #ifndef CPUQuantizedAdd_hpp
 #define CPUQuantizedAdd_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 #include "TFQuantizeOp_generated.h"
 
 // have to include after Marco.h

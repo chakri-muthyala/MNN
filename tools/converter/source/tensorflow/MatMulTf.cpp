@@ -55,4 +55,3 @@ void MatBandPartTf::run(MNN::OpT *dstOp, TmpNode *srcNode) {
 }
 
 REGISTER_CONVERTER(MatBandPartTf, MatrixBandPart);
-REGISTER_CONVERTER(MatBandPartTf, BatchMatrixBandPart);

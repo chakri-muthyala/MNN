@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUConst.hpp"
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
+#include "CPUConst.hpp"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
 
 namespace MNN {
 // get data pointer from blob
@@ -58,6 +58,5 @@ public:
 };
 
 REGISTER_CPU_OP_CREATOR(CPUConstCreator, OpType_Const);
-REGISTER_CPU_OP_CREATOR(CPUConstCreator, OpType_TrainableParam);
 
 } // namespace MNN

@@ -6,8 +6,8 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/execution/VulkanDeconvolution.hpp"
-#include "core/Macro.h"
+#include "VulkanDeconvolution.hpp"
+#include "Macro.h"
 namespace MNN {
 VulkanDeconvolution::VulkanDeconvolution(Backend* bn, const Convolution2D* conv) : VulkanBasicExecution(bn) {
     mConvCommonOption = conv->common();
@@ -88,11 +88,6 @@ void VulkanDeconvolution::writeConvolutionConst(VulkanConvolutionCommon::Convolu
     const int ocDiv4 = UP_DIV(dst->channel(), 4);
     int padX         = common->padX();
     int padY         = common->padY();
-    if (nullptr != common->pads()) {
-        MNN_ASSERT(common->pads()->size() >= 4);
-        padX = common->pads()->data()[1];
-        padY = common->pads()->data()[0];
-    }
 
     if (common->padMode() == PadMode_SAME) {
         int output_width  = dst->width();

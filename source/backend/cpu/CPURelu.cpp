@@ -6,13 +6,11 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPURelu.hpp"
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
-#include "core/Concurrency.h"
+#include "CPURelu.hpp"
 #include "CPUBackend.hpp"
-#include <string.h>
+#include "CommonOptFunction.h"
+#include "Macro.h"
+
 namespace MNN {
 ErrorCode CPURelu::onExecute(const std::vector<Tensor*>& inputs, const std::vector<Tensor*>& outputs) {
     auto& ib = inputs[0]->buffer();
@@ -21,27 +19,15 @@ ErrorCode CPURelu::onExecute(const std::vector<Tensor*>& inputs, const std::vect
     const float* srcO = (const float*)ib.host;
     float* dstO       = (float*)ob.host;
     auto size         = inputs[0]->size() / sizeof(float);
-    auto numberThread = ((CPUBackend*)backend())->threadNumber();
     auto sizeQuad     = size / 4;
-    auto remain       = sizeQuad * 4;
-    int sizeDivide = sizeQuad / numberThread;
-    if (sizeQuad > 0) {
-        MNN_CONCURRENCY_BEGIN(tId, numberThread) {
-            int number = sizeDivide;
-            if (tId == numberThread - 1) {
-                number = sizeQuad - tId * sizeDivide;
-            }
-            MNNReluWithSlope(dstO + 4 * tId * sizeDivide, srcO + 4 * tId * sizeDivide, number, mSlope);
-        }
-        MNN_CONCURRENCY_END();
+    auto remain       = size - sizeQuad * 4;
+
+    MNNReluWithSlope(dstO, srcO, sizeQuad, mSlope);
+
+    if (remain > 0) {
+        MNNReluWithSlope(dstO + size - 4, srcO + size - 4, 1, mSlope);
     }
-    for (int j = remain; j < size; ++j) {
-        if (srcO[j] < 0) {
-            dstO[j] = srcO[j] * mSlope;
-        } else {
-            dstO[j] = srcO[j];
-        }
-    }
+
     return NO_ERROR;
 }
 
@@ -51,23 +37,9 @@ ErrorCode CPURelu6::onExecute(const std::vector<Tensor*>& inputs, const std::vec
 
     const float* srcO = (const float*)ib.host;
     float* dstO       = (float*)ob.host;
-    auto size         = inputs[0]->elementSize();
-    auto numberThread = ((CPUBackend*)backend())->threadNumber();
-    auto sizeQuad     = size / 4;
-    auto remain       = sizeQuad * 4;
-    int sizeDivide = sizeQuad / numberThread;
+    auto size         = inputs[0]->size() / sizeof(float);
 
-    std::vector<float> bias = {0.0f, 0.0f, 0.0f, 0.0f};
-    MNN_CONCURRENCY_BEGIN(tId, numberThread) {
-        int number = sizeDivide;
-        if (tId == numberThread - 1) {
-            number = sizeQuad - tId * sizeDivide;
-        }
-        ::memcpy(dstO + tId * sizeDivide * 4, srcO + tId * sizeDivide * 4, number * 4 * sizeof(float));
-        MNNAddBiasRelu6(dstO + tId * sizeDivide * 4, bias.data(), number, 1);
-    }
-    MNN_CONCURRENCY_END();
-    MNNRelu6(dstO + remain, srcO + remain, size - remain);
+    MNNRelu6(dstO, srcO, size);
     return NO_ERROR;
 }
 
@@ -86,18 +58,16 @@ ErrorCode CPUPRelu::onExecute(const std::vector<Tensor*>& inputs, const std::vec
     const int channel   = ib.dim[1].extent;
     const int batch     = ib.dim[0].extent;
     const int depthQuad = UP_DIV(channel, 4);
+    const int batchSize = depthQuad * 4 * width * height;
     const float* srcO   = (const float*)ib.host;
     float* dstO         = (float*)ob.host;
     int sizeQuad        = width * height;
-    auto totalCount = batch * depthQuad;
-    auto numberThread = ((CPUBackend*)backend())->threadNumber();
-    MNN_CONCURRENCY_BEGIN(tId, numberThread) {
-        for (int b=tId; b<totalCount; b+=numberThread) {
-            auto c = b % depthQuad;
-            MNNReluWithSlopeChannel(dstO + sizeQuad * 4 * b, srcO + sizeQuad * 4 * b, mSlope.get() + 4 * c, sizeQuad, 1);
-        }
+
+    for (int b = 0; b < batch; ++b) {
+        auto src = srcO + b * batchSize;
+        auto dst = dstO + b * batchSize;
+        MNNReluWithSlopeChannel(dst, src, mSlope.get(), sizeQuad, depthQuad);
     }
-    MNN_CONCURRENCY_END();
     return NO_ERROR;
 }
 

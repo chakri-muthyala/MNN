@@ -9,7 +9,7 @@
 #ifndef CPUSize_hpp
 #define CPUSize_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 template <typename T>

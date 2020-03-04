@@ -11,10 +11,10 @@
 #endif
 
 #include <fstream>
-#include <MNN/Interpreter.hpp>
+#include "Interpreter.hpp"
 #include "MNNTestSuite.h"
-#include "core/Session.hpp"
-#include "core/TensorUtils.hpp"
+#include "Session.hpp"
+#include "TensorUtils.hpp"
 #include "TestUtils.h"
 
 using namespace MNN;

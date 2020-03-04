@@ -10,8 +10,8 @@
 #define GLPROGRAM_H
 
 #include <string>
-#include "backend/opengl/GLHead.hpp"
-#include "backend/opengl/GLLock.hpp"
+#include "GLHead.hpp"
+#include "GLLock.hpp"
 namespace MNN {
 namespace OpenGL {
 class GLProgram {

@@ -9,7 +9,7 @@
 #ifndef CPUCrop_hpp
 #define CPUCrop_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUCrop : public Execution {

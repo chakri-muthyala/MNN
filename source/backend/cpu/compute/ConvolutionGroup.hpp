@@ -9,7 +9,7 @@
 #ifndef ConvolutionGroupInt8_hpp
 #define ConvolutionGroupInt8_hpp
 
-#include "backend/cpu/compute/ConvolutionIntFactory.hpp"
+#include "ConvolutionIntFactory.hpp"
 
 namespace MNN {
 class ConvolutionGroup : public Execution {

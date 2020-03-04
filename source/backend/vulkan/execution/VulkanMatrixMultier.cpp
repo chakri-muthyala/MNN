@@ -6,8 +6,8 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/execution/VulkanMatrixMultier.hpp"
-#include "core/Macro.h"
+#include "VulkanMatrixMultier.hpp"
+#include "Macro.h"
 namespace MNN {
 struct constUniform {
     ivec4 outputSize;

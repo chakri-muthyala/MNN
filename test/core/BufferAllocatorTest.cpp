@@ -6,7 +6,7 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/BufferAllocator.hpp"
+#include "BufferAllocator.hpp"
 #include "MNNTestSuite.h"
 
 using namespace MNN;

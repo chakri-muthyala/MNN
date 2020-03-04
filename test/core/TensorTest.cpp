@@ -7,7 +7,7 @@
 //
 
 #include "MNNTestSuite.h"
-#include <MNN/Tensor.hpp>
+#include "Tensor.hpp"
 
 using namespace MNN;
 

@@ -8,8 +8,8 @@
 
 #include <set>
 #include <string>
-#include <MNN/ImageProcess.hpp>
-#include <MNN/Tensor.hpp>
+#include "ImageProcess.hpp"
+#include "Tensor.hpp"
 #include "MNN_generated.h"
 #include "logkit.h"
 

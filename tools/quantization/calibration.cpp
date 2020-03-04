@@ -11,15 +11,15 @@
 #include <fstream>
 #include <iostream>
 #include <set>
-#include <MNN/ImageProcess.hpp>
+#include "ImageProcess.hpp"
 #include "flatbuffers/util.h"
 #include "logkit.h"
 #include "quantizeWeight.hpp"
 #include "rapidjson/document.h"
 //#define MNN_OPEN_TIME_TRACE
-#include <MNN/AutoTime.hpp>
+#include "AutoTime.hpp"
 #include "Helper.hpp"
-#include "core/TensorUtils.hpp"
+#include "TensorUtils.hpp"
 
 using namespace MNN::CV;
 

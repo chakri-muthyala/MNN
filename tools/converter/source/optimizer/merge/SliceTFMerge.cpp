@@ -13,10 +13,8 @@
 namespace MNN {
 namespace Express {
 static auto gRegister = []() {
-    auto compare = [](EXPRP expr) {
-        if (nullptr == expr->get()) {
-            return false;
-        }
+    auto compare = [](VARP var) {
+        auto expr = var->expr().first;
         if (expr->get()->type() != OpType_SliceTf) {
             return false;
         }
@@ -40,9 +38,17 @@ static auto gRegister = []() {
         }
         return true;
     };
-    auto modify = [](EXPRP expr) {
+    auto modify = [](VARP var) {
+        auto expr = var->expr().first;
         auto inputs = expr->inputs();
-        Expr::replace(expr, inputs[0]->expr().first);
+        auto outputs = var->expr().first->outputs();
+        for (auto weakVar : outputs) {
+            auto var = weakVar.lock();
+            if (nullptr == var) {
+                continue;
+            }
+            Variable::replace(var, inputs[0]);
+        }
         return true;
     };
     TemplateMerge::getInstance("Merge").insertTemplate("SliceTFMerge", compare, modify);

@@ -9,7 +9,7 @@
 #ifndef MetalQuantizedAdd_hpp
 #define MetalQuantizedAdd_hpp
 
-#import "core/Execution.hpp"
+#import "Execution.hpp"
 #import "MNN_generated.h"
 #import "MetalDefine.h"
 

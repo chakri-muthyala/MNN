@@ -27,10 +27,10 @@
 #include <dirent.h>
 #endif
 
-#include "core/Backend.hpp"
-#include <MNN/Interpreter.hpp>
-#include <MNN/MNNDefine.h>
-#include <MNN/Tensor.hpp>
+#include "Backend.hpp"
+#include "Interpreter.hpp"
+#include "MNNDefine.h"
+#include "Tensor.hpp"
 #include "revertMNNModel.hpp"
 /**
  TODOs:

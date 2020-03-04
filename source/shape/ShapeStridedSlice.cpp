@@ -8,11 +8,11 @@
 
 #include <algorithm>
 #include <array>
-#include "backend/cpu/CPUStridedSlice.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
-#include "core/TensorUtils.hpp"
+#include "CPUStridedSlice.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
+#include "SizeComputer.hpp"
+#include "TensorUtils.hpp"
 
 namespace MNN {
 class StridedSliceComputer : public SizeComputer {
@@ -21,7 +21,8 @@ public:
                                const std::vector<Tensor *> &outputs) const override {
         MNN_ASSERT(4 == inputs.size());
         MNN_ASSERT(1 == outputs.size());
-        
+        const std::string name = op->name()->c_str();
+
         Tensor *input            = inputs[0];
         const int inputDimension = input->buffer().dimensions;
         if (inputDimension <= 0) {

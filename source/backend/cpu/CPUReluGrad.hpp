@@ -9,7 +9,7 @@
 #ifndef CPUReluGrad_hpp
 #define CPUReluGrad_hpp
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 namespace MNN {
 class CPUReluGrad : public Execution {
 public:

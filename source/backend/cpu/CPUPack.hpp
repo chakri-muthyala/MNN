@@ -9,7 +9,7 @@
 #ifndef CPUPack_hpp
 #define CPUPack_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 #include "Type_generated.h"
 
 namespace MNN {

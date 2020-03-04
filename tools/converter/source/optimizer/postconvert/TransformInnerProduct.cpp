@@ -112,7 +112,6 @@ public:
             convP->common->strideY     = 1;
             convP->common->group       = 1;
             convP->common->outputCount = originInner->outputCount;
-            convP->common->inputCount = originInner->weight.size() / originInner->outputCount;
             convP->common->padX        = 0;
             convP->common->padY        = 0;
             convP->common->padMode     = MNN::PadMode_CAFFE;
@@ -153,7 +152,7 @@ public:
             
             if (axis + 1 != 4) {
                 MNN::OpT* afterReshapeT = new MNN::OpT;
-                afterReshapeT->name = "____reshape2____" + op->name;
+                reshapeT->name = "____reshape2____" + op->name;
                 auto reshapeP  = new MNN::ReshapeT;
                 reshapeP->dims.resize(axis + 1);
                 for (int i = 0; i < axis; ++i) {

@@ -6,14 +6,14 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUConvolution.hpp"
+#include "CPUConvolution.hpp"
 #include <math.h>
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
-#include "backend/cpu/compute/ConvolutionFloatFactory.h"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
+#include "compute/ConvolutionFloatFactory.h"
 //#define MNN_OPEN_TIME_TRACE
-#include <MNN/AutoTime.hpp>
+#include "AutoTime.hpp"
 
 namespace MNN {
 
@@ -52,10 +52,6 @@ ErrorCode CPUConvolution::onResize(const std::vector<Tensor *> &inputs, const st
     }
     mPadX = mCommon->padX();
     mPadY = mCommon->padY();
-    if (nullptr != mCommon->pads()) {
-        mPadX = mCommon->pads()->data()[1];
-        mPadY = mCommon->pads()->data()[0];
-    }
 
     return NO_ERROR;
 }

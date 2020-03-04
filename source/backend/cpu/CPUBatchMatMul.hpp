@@ -9,7 +9,7 @@
 #ifndef CPUBatchMatMul_hpp
 #define CPUBatchMatMul_hpp
 
-#include "backend/cpu/CPUMatMul.hpp"
+#include "CPUMatMul.hpp"
 
 namespace MNN {
 

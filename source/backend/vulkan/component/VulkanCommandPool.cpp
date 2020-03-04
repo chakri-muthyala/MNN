@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/component/VulkanCommandPool.hpp"
+#include "VulkanCommandPool.hpp"
 #include <string.h>
 #include <memory>
-#include "backend/vulkan/component/VulkanFence.hpp"
+#include "VulkanFence.hpp"
 namespace MNN {
 VulkanCommandPool::VulkanCommandPool(const VulkanDevice& dev) : mDevice(dev), mPool(VK_NULL_HANDLE) {
     CALL_VK(mDevice.createCommandPool(mPool));

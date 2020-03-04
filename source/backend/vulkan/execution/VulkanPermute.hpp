@@ -8,8 +8,8 @@
 
 #ifndef VulkanPermute_hpp
 #define VulkanPermute_hpp
-#include "backend/vulkan/execution/VulkanBasicExecution.hpp"
-#include "backend/vulkan/execution/VulkanImageConverter.hpp"
+#include "VulkanBasicExecution.hpp"
+#include "VulkanImageConverter.hpp"
 namespace MNN {
 class VulkanPermute : public VulkanBasicExecution {
 public:

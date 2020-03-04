@@ -24,7 +24,6 @@ public:
         auto extraParam    = op->main_as_Extra();
         const int attrSize = extraParam->attr()->size();
         std::string interpMode;
-        std::string coordMode = ""; // detect align_corner attribute
         for (int i = 0; i < attrSize; ++i) {
             auto attr       = extraParam->attr()->GetAs<Attribute>(i);
             const auto& key = attr->key()->str();
@@ -34,8 +33,6 @@ public:
                 scalesSize = attr->list()->f()->size();
                 scales.resize(scalesSize);
                 memcmp(scales.data(), attr->list()->f()->data(), sizeof(float) * scalesSize);
-            } else if (key == "coordinate_transformation_mode") {
-                coordMode = attr->s()->str();
             }
         }
 
@@ -55,10 +52,9 @@ public:
 
             if (!scaleDataPtr) {
                 mergeredUpsample->main.value = interpParam.release();
-                auto output = Variable::create(Expr::create(mergeredUpsample.get(), {_Convert(inputs[0], NC4HW4), inputs[1]}));
-                output = _Convert(output, NCHW);
-                return output->expr().first;
+                return Expr::create(mergeredUpsample.get(), {inputs[0], inputs[1]});
             }
+
             // scale is constant node
             scalesSize = scaleInfo->size;
         }
@@ -77,9 +73,7 @@ public:
         } else {
             MNN_ERROR("MNN Not support Upsample when scale size = %d\n", scalesSize);
         }
-        interpParam->alignCorners = (coordMode == "align_corners");
-        interpParam->halfPixelCenters = (interpParam->alignCorners == false);
-        
+
         // 1:near 2: bilinear 3: cubic
         if (interpMode == "nearest") {
             interpParam->resizeType = 1;
@@ -90,10 +84,7 @@ public:
         }
 
         mergeredUpsample->main.value = interpParam.release();
-        auto newInput = _Convert(inputs[0], NC4HW4);
-        auto tempOutput = Variable::create(Expr::create(mergeredUpsample.get(), {newInput}));
-        auto output = _Convert(tempOutput, NCHW);
-        return output->expr().first;
+        return Expr::create(mergeredUpsample.get(), {inputs[0]});
     }
 };
 
@@ -106,7 +97,6 @@ public:
         MNN_CHECK(inputs.size() == 4, "Onnx Resize should have 4 inputs!");
 
         std::string resizeMode = "";
-        std::string coordMode = ""; // detect align_corner attribute
         auto op                = expr->get();
         auto extraParam        = op->main_as_Extra();
         const int attrSize     = extraParam->attr()->size();
@@ -115,8 +105,6 @@ public:
             const auto& key = attr->key()->str();
             if (key == "mode") {
                 resizeMode = attr->s()->str();
-            } else if (key == "coordinate_transformation_mode") {
-                coordMode = attr->s()->str();
             }
         }
 
@@ -133,18 +121,14 @@ public:
         } else {
             MNN_ERROR("Unsupported Upsample mode! ==> %s\n", resizeMode.c_str());
         }
-        resizeParam->alignCorners = (coordMode == "align_corners");
-        resizeParam->halfPixelCenters = (resizeParam->alignCorners == false);
 
         auto sizes = inputs[3];
 
         auto name         = sizes->name();
         auto sizesDataPtr = sizes->readMap<int32_t>();
-        VARP output;
         if (!sizesDataPtr) {
             mergeredResize->main.value = resizeParam.release();
-            auto resizeExpr = Expr::create(mergeredResize.get(), {_Convert(inputs[0], NC4HW4), inputs[2]});
-            output = _Convert(Variable::create(resizeExpr), NCHW);
+            return Expr::create(mergeredResize.get(), {inputs[0], inputs[2]});
         } else {
             auto scalesInfo      = sizes->getInfo();
             const int scalesSize = scalesInfo->size;
@@ -153,10 +137,8 @@ public:
             resizeParam->outputWidth  = sizesDataPtr[3];
 
             mergeredResize->main.value = resizeParam.release();
-            auto resizeExpr = Expr::create(mergeredResize.get(), {_Convert(inputs[0], NC4HW4)});
-            output = _Convert(Variable::create(resizeExpr), NCHW);
+            return Expr::create(mergeredResize.get(), {inputs[0]});
         }
-        return output->expr().first;
     }
 };
 

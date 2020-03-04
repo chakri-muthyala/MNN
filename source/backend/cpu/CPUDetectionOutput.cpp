@@ -11,13 +11,13 @@
 #pragma optimize("", off)
 #endif
 
-#include "backend/cpu/CPUDetectionOutput.hpp"
+#include "CPUDetectionOutput.hpp"
 #include <math.h>
 #include <list>
-#include <MNN/AutoTime.hpp>
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/TensorUtils.hpp"
+#include "AutoTime.hpp"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "TensorUtils.hpp"
 
 namespace MNN {
 

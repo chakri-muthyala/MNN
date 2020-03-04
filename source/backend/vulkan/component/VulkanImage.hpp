@@ -8,9 +8,9 @@
 
 #ifndef VulkanImage_hpp
 #define VulkanImage_hpp
-#include <MNN/Tensor.hpp>
-#include "backend/vulkan/component/VulkanBuffer.hpp"
-#include "backend/vulkan/component/VulkanMemoryPool.hpp"
+#include "Tensor.hpp"
+#include "VulkanBuffer.hpp"
+#include "VulkanMemoryPool.hpp"
 namespace MNN {
 class VulkanSampler : public NonCopyable {
 public:

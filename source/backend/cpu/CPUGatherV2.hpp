@@ -9,7 +9,7 @@
 #ifndef CPUGatherV2_hpp
 #define CPUGatherV2_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUGatherV2 : public Execution {

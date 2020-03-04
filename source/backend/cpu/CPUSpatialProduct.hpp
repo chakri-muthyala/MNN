@@ -9,7 +9,7 @@
 #ifndef CPUSpatialProduct_hpp
 #define CPUSpatialProduct_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUSpatialProduct : public Execution {

@@ -6,14 +6,14 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include <MNN/Tensor.hpp>
+#include "Tensor.hpp"
 #include <complex.h>
 #include <string.h>
-#include "core/Backend.hpp"
-#include "core/MNNMemoryUtils.h"
+#include "Backend.hpp"
+#include "MNNMemoryUtils.h"
 #include "MNN_generated.h"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "Macro.h"
+#include "TensorUtils.hpp"
 
 #define MAX_TENSOR_DIM 6
 

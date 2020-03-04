@@ -6,11 +6,11 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUSigmoid.hpp"
+#include "CPUSigmoid.hpp"
 #include <math.h>
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
 
 namespace MNN {
 ErrorCode CPUSigmoid::onExecute(const std::vector<Tensor*>& inputs, const std::vector<Tensor*>& outputs) {

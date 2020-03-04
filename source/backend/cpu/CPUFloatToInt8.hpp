@@ -9,7 +9,7 @@
 #ifndef CPUFloatToInt8_hpp
 #define CPUFloatToInt8_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 

@@ -9,7 +9,7 @@
 #ifndef CPUSetDiff1D_hpp
 #define CPUSetDiff1D_hpp
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 namespace MNN {
 class CPUSetDiff1D : public Execution {
 public:

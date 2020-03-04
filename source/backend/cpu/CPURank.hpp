@@ -9,7 +9,7 @@
 #ifndef CPURank_hpp
 #define CPURank_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPURank : public Execution {

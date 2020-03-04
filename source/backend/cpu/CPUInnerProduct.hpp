@@ -9,7 +9,7 @@
 #ifndef CPUInnerProduct_hpp
 #define CPUInnerProduct_hpp
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 
 namespace MNN {
 class CPUInnerProductCreator : public CPUBackend::Creator {

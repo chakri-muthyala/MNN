@@ -1,5 +1,5 @@
 //
-//  CPUElu.hpp
+//  CPURelu.hpp
 //  MNN
 //
 //  Created by MNN on 2019/09/23.
@@ -9,7 +9,7 @@
 #ifndef CPUElu_hpp
 #define CPUElu_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUElu : public Execution {

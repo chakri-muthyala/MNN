@@ -6,12 +6,12 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUPriorbox.hpp"
+#include "CPUPriorbox.hpp"
 #include <math.h>
-#include "core/AutoStorage.h"
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/TensorUtils.hpp"
+#include "AutoStorage.h"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "TensorUtils.hpp"
 
 namespace MNN {
 

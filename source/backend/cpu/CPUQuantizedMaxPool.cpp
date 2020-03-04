@@ -6,16 +6,17 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 #ifdef MNN_SUPPORT_TFLITE_QUAN
-#include "backend/cpu/CPUQuantizedMaxPool.hpp"
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/CPUQuantizationUtils.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
+#include "CPUQuantizedMaxPool.hpp"
+#include "CPUBackend.hpp"
+#include "CPUQuantizationUtils.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
 
 namespace MNN {
 
 CPUQuantizedMaxPool::CPUQuantizedMaxPool(Backend *backend, const Op *op) : Execution(backend) {
     auto mp       = op->main_as_QuantizedMaxPool();
+    mIstflite     = (mp->modelFormat() == ModeFormat_TFLITE);
     mKernelWidth  = mp->kernelX();
     mKernelHeight = mp->kernelY();
     mPadWidth     = mp->padX();
@@ -30,6 +31,15 @@ ErrorCode CPUQuantizedMaxPool::onExecute(const std::vector<Tensor *> &inputs, co
     auto output = outputs[0];
 
     MNN_ASSERT(input->buffer().dimensions == 4);
+
+    if (!mIstflite) {
+        MNN_ASSERT(inputs.size() == 3);
+        MNN_ASSERT(outputs.size() == 3);
+        const float minInput                    = inputs[1]->host<float>()[0];
+        const float maxInput                    = inputs[2]->host<float>()[0];
+        ((float *)outputs[1]->buffer().host)[0] = minInput;
+        ((float *)outputs[2]->buffer().host)[0] = maxInput;
+    }
 
     // input : nhwc
     const int32_t inBatch   = input->buffer().dim[0].extent;

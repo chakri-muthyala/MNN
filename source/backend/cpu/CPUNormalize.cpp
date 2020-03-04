@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUNormalize.hpp"
+#include "CPUNormalize.hpp"
 #include <math.h>
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
 
 namespace MNN {
 CPUNormalize::CPUNormalize(Backend* b, const MNN::Op* op) : MNN::Execution(b) {

@@ -6,11 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/compute/ConvOpt.h"
+#include "ConvOpt.h"
 #include <algorithm>
-#include <string.h>
-#include "core/Macro.h"
-#include "math/Vec4.hpp"
+#include "Macro.h"
+#include "Vec4.hpp"
 using namespace MNN::Math;
 #ifndef MNN_USE_NEON
 #ifndef MNN_USE_SSE
@@ -126,10 +125,6 @@ void MNNGemmFloatCommon_4(float* dst, const float* src, const float* weight, siz
 }
 
 #endif
-
-void MNNMatrixCopyUnit(float* C, const float* A, size_t cStride, size_t aStride, size_t height) {
-    MNNMatrixCopy(C, A, CONVOLUTION_TILED_NUMBER, cStride, aStride, height);
-}
 
 void MNNConvRunForUnitDepthWise(float* dst, const float* src, const float* weight, size_t fw, size_t fh,
                                 size_t weight_y_step, size_t dilateX_step, size_t dilateY_step) {
@@ -271,9 +266,7 @@ void MNNMatrixProd(float* C, const float* A, const float* B, size_t widthC4, siz
         auto b = B + bStride * y;
         auto c = C + cStride * y;
         for (int x = 0; x < widthC4; ++x) {
-            auto aV = Vec4::load(a + 4 * x);
-            auto bV = Vec4::load(b + 4 * x);
-            Vec4::save(c + 4 * x, aV * bV);
+            Vec4::save(c + 4 * x, Vec4::load(a + 4 * x) * Vec4::load(b + 4 * x));
         }
     }
 }
@@ -303,7 +296,7 @@ void MNNDeconvRunForLineDepthwise(const float* dst, float* src, const float* wei
 }
 
 void MNNMatrixProdCommon(float* C, const float* A, const float* B, size_t width, size_t cStride, size_t aStride, size_t bStride, size_t height) {
-    int widthC4 = (int)width / 4;
+    int widthC4 = width / 4;
     if (widthC4 > 0) {
         MNNMatrixProd(C, A, B, widthC4, cStride, aStride, bStride, height);
         width = width - 4*widthC4;
@@ -324,7 +317,7 @@ void MNNMatrixProdCommon(float* C, const float* A, const float* B, size_t width,
 }
 
 void MNNMatrixAddCommon(float* C, const float* A, const float* B, size_t width, size_t cStride, size_t aStride, size_t bStride, size_t height) {
-    int widthC4 = (int)width / 4;
+    int widthC4 = width / 4;
     if (widthC4 > 0) {
         MNNMatrixAdd(C, A, B, widthC4, cStride, aStride, bStride, height);
         width = width - 4*widthC4;
@@ -345,7 +338,7 @@ void MNNMatrixAddCommon(float* C, const float* A, const float* B, size_t width, 
 }
 
 void MNNMatrixSubCommon(float* C, const float* A, const float* B, size_t width, size_t cStride, size_t aStride, size_t bStride, size_t height) {
-    int widthC4 = (int)width / 4;
+    int widthC4 = width / 4;
     if (widthC4 > 0) {
         MNNMatrixSub(C, A, B, widthC4, cStride, aStride, bStride, height);
         width = width - 4*widthC4;
@@ -366,7 +359,7 @@ void MNNMatrixSubCommon(float* C, const float* A, const float* B, size_t width, 
 }
 
 void MNNMatrixMaxCommon(float* C, const float* A, const float* B, size_t width, size_t cStride, size_t aStride, size_t bStride, size_t height) {
-    int widthC4 = (int)width / 4;
+    int widthC4 = width / 4;
     if (widthC4 > 0) {
         MNNMatrixMax(C, A, B, widthC4, cStride, aStride, bStride, height);
         width = width - 4*widthC4;
@@ -383,13 +376,5 @@ void MNNMatrixMaxCommon(float* C, const float* A, const float* B, size_t width, 
                 c[x] = std::max(b[x], a[x]);
             }
         }
-    }
-}
-void MNNMatrixCopy(float* C, const float* A, size_t widthC4, size_t cStride, size_t aStride, size_t height) {
-    auto lineBytes = widthC4 * 4 * sizeof(float);
-    for (int y = 0; y < height; ++y) {
-        auto a = A + aStride * y;
-        auto c = C + cStride * y;
-        ::memcpy(c, a, lineBytes);
     }
 }

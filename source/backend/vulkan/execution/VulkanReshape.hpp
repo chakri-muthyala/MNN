@@ -8,8 +8,8 @@
 
 #ifndef VulkanReshape_hpp
 #define VulkanReshape_hpp
-#include "backend/vulkan/execution/VulkanBasicExecution.hpp"
-#include "backend/vulkan/execution/VulkanImageConverter.hpp"
+#include "VulkanBasicExecution.hpp"
+#include "VulkanImageConverter.hpp"
 
 namespace MNN {
 class VulkanReshape : public VulkanBasicExecution {

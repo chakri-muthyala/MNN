@@ -11,7 +11,7 @@
 
 #include <vector>
 #include "HalideRuntime.h"
-#include <MNN/MNNDefine.h>
+#include "MNNDefine.h"
 
 namespace MNN {
 

@@ -6,11 +6,11 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUAsString.hpp"
+#include "CPUAsString.hpp"
 #include <string.h>
 #include <functional>
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "Macro.h"
+#include "TensorUtils.hpp"
 
 namespace MNN {
 #define INT_CAPACITY 10

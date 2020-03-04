@@ -6,13 +6,13 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUPoolInt8.hpp"
-#include "core/Macro.h"
+#include "CPUPoolInt8.hpp"
+#include "Macro.h"
 
 #ifdef MNN_USE_NEON
 #include <arm_neon.h>
 #endif
-#include "core/Concurrency.h"
+#include "Concurrency.h"
 
 #define UNIT 4
 

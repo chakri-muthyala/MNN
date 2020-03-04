@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <map>
 #include <memory>
-#include "core/Backend.hpp"
-#include "core/Execution.hpp"
+#include "Backend.hpp"
+#include "Execution.hpp"
 #include "MNN_generated.h"
 
 namespace MNN {
@@ -25,8 +25,6 @@ public:
                BackendConfig::PowerMode = BackendConfig::Power_Normal, size_t flags = 0);
     virtual ~CPUBackend();
 
-    // Return sizeDivide, scheduleNumber aligned memory
-    std::pair<int, int> multiThreadDivide(int size) const;
 public:
     virtual bool onAcquireBuffer(const Tensor* nativeTensor, StorageType storageType) override;
     virtual bool onReleaseBuffer(const Tensor* nativeTensor, StorageType storageType) override;
@@ -40,6 +38,7 @@ public:
                                 const MNN::Op* op) override;
     virtual void onExecuteBegin() const override;
     virtual void onExecuteEnd() const override;
+
 public:
     class Creator {
     public:

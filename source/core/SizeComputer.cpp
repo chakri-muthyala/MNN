@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/SizeComputer.hpp"
+#include "SizeComputer.hpp"
 #include <stdlib.h>
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "Macro.h"
+#include "TensorUtils.hpp"
 #include <mutex>
 namespace MNN {
 #ifdef MNN_CODEGEN_REGISTER
@@ -58,8 +58,6 @@ float SizeComputer::onComputeFlops(const MNN::Op* op, const std::vector<Tensor*>
 }
 bool SizeComputer::opNeedContent(OpType type, int index) {
     switch (type) {
-        case OpType_ZerosLike:
-        case OpType_ZeroGrad:
         case OpType_Shape:
         case OpType_Rank:
         case OpType_Const:
@@ -85,11 +83,7 @@ float SizeComputer::computeFlops(const MNN::Op* op, const std::vector<Tensor*>& 
     if (nullptr != computer) {
         return computer->onComputeFlops(op, inputs, outputs);
     }
-    auto sumFlops = 0.0f;
-    for (auto output : outputs) {
-        sumFlops += (float)output->elementSize() / 1024.0f / 1024.0f;
-    }
-    return sumFlops;
+    return (float)outputs[0]->elementSize() / 1024.0f / 1024.0f;
 }
 
 bool SizeComputer::computeOutputSize(const MNN::Op* op, const std::vector<Tensor*>& inputs,
@@ -118,7 +112,7 @@ bool SizeComputer::computeOutputSize(const MNN::Op* op, const std::vector<Tensor
         return true;
     }
     // Not Support
-    MNN_PRINT("Can't compute size for %d, name=%s\n", op->type(), op->name() ? op->name()->c_str() : "");
+    MNN_PRINT("Can't compute size for %d, name=%s\n", op->type(), op->name()->c_str());
 
     return false;
 }

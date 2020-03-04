@@ -18,7 +18,7 @@
 namespace MNN {
 
 /** memory utils wrapper. provides memory reusing with alignment ability. */
-class MNN_PUBLIC BufferAllocator : public NonCopyable {
+class BufferAllocator : public NonCopyable {
 public:
     /**
      * @brief init buffer allocator with pointer alignment.
@@ -58,9 +58,8 @@ public:
      * @brief free all allocated memories.
      * @sa allocSeparate
      * @sa alloc
-     * if allRelease, clear all memory , otherwise delete freelist
      */
-    void release(bool allRelease = true);
+    void release();
 
     /**
      * @brief query total size allocated indeed.

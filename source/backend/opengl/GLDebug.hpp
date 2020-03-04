@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "core/Macro.h"
+#include "Macro.h"
 
 #ifdef __cplusplus
 extern "C" {

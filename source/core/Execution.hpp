@@ -11,10 +11,10 @@
 
 #include <memory>
 #include <string>
-#include <MNN/ErrorCode.hpp>
-#include <MNN/MNNForwardType.h>
+#include "ErrorCode.hpp"
+#include "MNNForwardType.h"
 #include "NonCopyable.hpp"
-#include <MNN/Tensor.hpp>
+#include "Tensor.hpp"
 
 namespace MNN {
 class Backend;

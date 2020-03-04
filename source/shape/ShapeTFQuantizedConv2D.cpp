@@ -7,8 +7,8 @@
 //
 #ifdef MNN_SUPPORT_TFLITE_QUAN
 #include <math.h>
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
+#include "Macro.h"
+#include "SizeComputer.hpp"
 
 namespace MNN {
 class TFQuantizedConv2DComputer : public SizeComputer {

@@ -9,8 +9,8 @@
 #ifndef CPUNormalize_hpp
 #define CPUNormalize_hpp
 
-#include "core/AutoStorage.h"
-#include "core/Execution.hpp"
+#include "AutoStorage.h"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUNormalize : public Execution {

@@ -9,7 +9,7 @@
 #ifndef CPUNonMaxSuppressionV2_hpp
 #define CPUNonMaxSuppressionV2_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 

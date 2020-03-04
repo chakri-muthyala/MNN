@@ -67,4 +67,3 @@ void Pooling3DTf::run(MNN::OpT *dstOp, TmpNode *srcNode) {
 }
 
 REGISTER_CONVERTER(Pooling3DTf, MaxPool3D);
-REGISTER_CONVERTER(Pooling3DTf, AvgPool3D);

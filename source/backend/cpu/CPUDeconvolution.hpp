@@ -36,16 +36,22 @@ class CPUDeconvolutionOrigin : public CPUDeconvolutionBasic {
 public:
     CPUDeconvolutionOrigin(const Tensor *input, const Op *convOp, Backend *b)
         : CPUDeconvolutionBasic(input, convOp, b) {
-        // Do nothing
+        mTempColBuffer.reset(new Tensor(4));
+        mTempSrcBuffer.reset(new Tensor(4));
     }
     virtual ~CPUDeconvolutionOrigin() = default;
     virtual ErrorCode onExecute(const std::vector<Tensor *> &inputs, const std::vector<Tensor *> &outputs) override;
     virtual ErrorCode onResize(const std::vector<Tensor *> &inputs, const std::vector<Tensor *> &outputs) override;
 
 private:
-    std::shared_ptr<StrassenMatrixComputor> mMatMul;
-    std::vector<std::pair<std::function<void(int)>, int>> mPreFunctions;
-    std::vector<std::pair<std::function<void(int)>, int>> mPostFunctions;
+    struct Unit {
+        std::vector<std::shared_ptr<StrassenMatrixComputor>> matrixMulti;
+        std::pair<int, std::function<void(int)>> postFunction;
+    };
+    std::vector<Unit> mComputors;
+    std::shared_ptr<Tensor> mTempSrcBuffer;
+    std::shared_ptr<Tensor> mTempColBuffer;
+    std::function<void(const float *, float *, int)> mFunction;
 };
 class CPUDeconvolutionMultiInput : public CPUDeconvolutionBasic {
 public:

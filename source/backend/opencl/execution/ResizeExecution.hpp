@@ -12,8 +12,8 @@
 #include <array>
 #include <memory>
 #include <vector>
-#include "core/Execution.hpp"
-#include "backend/opencl/core/OpenCLBackend.hpp"
+#include "Execution.hpp"
+#include "core/OpenCLBackend.hpp"
 
 namespace MNN {
 namespace OpenCL {

@@ -6,9 +6,9 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/execution/VulkanConvolution.hpp"
-#include "core/Macro.h"
-#include "backend/vulkan/execution/VulkanConvolutionImpl.hpp"
+#include "VulkanConvolution.hpp"
+#include "Macro.h"
+#include "VulkanConvolutionImpl.hpp"
 //#define MNN_USE_1x1
 namespace MNN {
 std::string VulkanConvolutionCommon::getPostTreatMacro(const Convolution2DCommon* common) {
@@ -63,11 +63,6 @@ void VulkanConvolutionCommon::writeParameter(ConvolutionParameter* convCons, con
         padY = pad_needed_height / 2;
     }
     {
-        if (nullptr != common->pads()) {
-            MNN_ASSERT(common->pads()->size() >= 4);
-            padX = common->pads()->data()[1];
-            padY = common->pads()->data()[0];
-        }
         convCons->batch         = input->batch();
         convCons->dilate[0]     = common->dilateX();
         convCons->dilate[1]     = common->dilateY();
@@ -206,10 +201,10 @@ public:
         const int fw        = common->kernelX();
         int srcCount        = 0;
         const float *source = nullptr;
-
+        
         srcCount = convReal->weight()->size() / (outputCount * fh * fw);
         source   = convReal->weight()->data();
-
+        
         if (op->type() == OpType_Convolution) {
             auto convCommonParam = op->main_as_Convolution2D()->common();
             const int group      = convCommonParam->group();

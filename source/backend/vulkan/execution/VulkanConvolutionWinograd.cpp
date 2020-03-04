@@ -6,13 +6,13 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/execution/VulkanConvolutionWinograd.hpp"
+#include "VulkanConvolutionWinograd.hpp"
 #include <string.h>
-#include "core/Macro.h"
-#include "math/WingoradGenerater.hpp"
+#include "Macro.h"
+#include "WingoradGenerater.hpp"
 #define COMPUT_SIZE 4
 #define COMPUT_SIZE2 16
-#include "backend/vulkan/execution/VulkanConvolution.hpp"
+#include "VulkanConvolution.hpp"
 namespace MNN {
 struct WinogradConst {
     ivec4 inputSize;

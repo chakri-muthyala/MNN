@@ -6,8 +6,8 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
+#include "Macro.h"
+#include "SizeComputer.hpp"
 
 namespace MNN {
 
@@ -22,7 +22,6 @@ class ROIPoolingComputer : public SizeComputer {
         auto &input  = inputs[0]->buffer();
         auto &output = outputs[0]->buffer();
         memcpy(output.dim, input.dim, sizeof(halide_dimension_t) * input.dimensions);
-        output.type = halide_type_of<float>();
 
         // width & height
         auto roi             = op->main_as_RoiPooling();

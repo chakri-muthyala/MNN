@@ -6,12 +6,11 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUTensorConvert.hpp"
-#include "backend/cpu/CPUBackend.hpp"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Concurrency.h"
+#include "CPUTensorConvert.hpp"
+#include "CPUBackend.hpp"
+#include "Macro.h"
+#include "TensorUtils.hpp"
+#include "compute/CommonOptFunction.h"
 
 namespace MNN {
 
@@ -113,7 +112,7 @@ ErrorCode CPUTensorConverter::convert(const Tensor* input, const Tensor* output)
         }
     }
     const int bitLength = ib.type.bytes();
-
+    
     if (MNN_DATA_FORMAT_NC4HW4 == source && MNN_DATA_FORMAT_NCHW == dest) {
         if (bitLength == 1) {
             for (int i = 0; i < ib.dim[0].extent; ++i) {
@@ -142,7 +141,7 @@ ErrorCode CPUTensorConverter::convert(const Tensor* input, const Tensor* output)
         }
         return NO_ERROR;
     }
-
+    
     if (MNN_DATA_FORMAT_NHWC == source && MNN_DATA_FORMAT_NC4HW4 == dest) {
         if (bitLength == 1) {
             _NHWC2NC4HW4Uint8((uint8_t*)ib.host, (uint8_t*)ob.host, batch, channel, area);
@@ -156,52 +155,29 @@ ErrorCode CPUTensorConverter::convert(const Tensor* input, const Tensor* output)
             NC4HW42NHWC((float*)ib.host, (float*)ob.host, batch, channel, area);
         }
     } else if (MNN_DATA_FORMAT_NHWC == source && MNN_DATA_FORMAT_NCHW == dest) {
-        if (bitLength != 4) {
-            return NOT_SUPPORT;
-        }
+        MNN_ASSERT(bitLength == 4);
         NHWC2NCHW((float*)ib.host, (float*)ob.host, batch, channel, area);
     } else if (MNN_DATA_FORMAT_NCHW == source && MNN_DATA_FORMAT_NHWC == dest) {
-        if (bitLength != 4) {
-            return NOT_SUPPORT;
-        }
+        MNN_ASSERT(bitLength == 4);
         NCHW2NHWC((float*)ib.host, (float*)ob.host, batch, channel, area);
     } else {
+        MNN_ASSERT(false);
         return NOT_SUPPORT;
     }
-
+    
     return NO_ERROR;
 }
 
 ErrorCode CPUTensorConverter::onExecute(const std::vector<Tensor*>& inputs, const std::vector<Tensor*>& outputs) {
-    if (1 == inputs[0]->batch()) {
-        return convert(inputs[0], outputs[0]);
-    }
-    auto numberThread = ((CPUBackend*)backend())->threadNumber();
-    int batchNumber = inputs[0]->batch();
-    MNN_CONCURRENCY_BEGIN(tId, numberThread) {
-        Tensor input;
-        Tensor output;
-        TensorUtils::copyShape(inputs[0], &input, true);
-        input.buffer().type = inputs[0]->getType();
-        TensorUtils::copyShape(outputs[0], &output, true);
-        output.buffer().type = outputs[0]->getType();
-        input.setLength(0, 1);
-        output.setLength(0, 1);
-        for (int b = tId; b < batchNumber; b+=numberThread) {
-            input.buffer().host = inputs[0]->host<uint8_t>() + inputs[0]->stride(0) * b * inputs[0]->getType().bytes();
-            output.buffer().host = outputs[0]->host<uint8_t>() + outputs[0]->stride(0) * b * outputs[0]->getType().bytes();
-            convert(&input, &output);
-        }
-    }
-    MNN_CONCURRENCY_END();
-    return NO_ERROR;
+    return convert(inputs[0], outputs[0]);
 }
 
 class CPUTensorConvertFactory : public CPUBackend::Creator {
 public:
     virtual Execution* onCreate(const std::vector<Tensor*>& inputs, const std::vector<Tensor*>& outputs,
                                 const MNN::Op* op, Backend* backend) const {
-        return new CPUTensorConverter(backend);
+        return new CPUTensorConverter(backend, op->main_as_TensorConvertInfo()->source(),
+                                      op->main_as_TensorConvertInfo()->dest());
     }
 };
 

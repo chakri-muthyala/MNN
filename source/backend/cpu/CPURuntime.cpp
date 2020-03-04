@@ -28,8 +28,8 @@
 #include <string.h>
 #include <vector>
 #include <algorithm>
-#include "backend/cpu/CPURuntime.hpp"
-#include <MNN/MNNDefine.h>
+#include "CPURuntime.hpp"
+#include "MNNDefine.h"
 
 #ifdef __ANDROID__
 static int getNumberOfCPU() {

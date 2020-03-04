@@ -9,7 +9,7 @@
 #ifndef MetalLSTM_hpp
 #define MetalLSTM_hpp
 
-#import "core/Execution.hpp"
+#import "Execution.hpp"
 #import "MNN_generated.h"
 #import "MetalDefine.h"
 

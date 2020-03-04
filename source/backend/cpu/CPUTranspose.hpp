@@ -9,7 +9,7 @@
 #ifndef CPUTranspose_hpp
 #define CPUTranspose_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 #include "Type_generated.h"
 
 namespace MNN {

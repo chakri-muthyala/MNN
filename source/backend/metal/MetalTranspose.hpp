@@ -9,7 +9,7 @@
 #ifndef MetalTranspose_hpp
 #define MetalTranspose_hpp
 
-#import "core/Execution.hpp"
+#import "Execution.hpp"
 #import "MetalDefine.h"
 #import "Type_generated.h"
 

@@ -6,9 +6,9 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opencl/execution/ReshapeExecution.hpp"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "ReshapeExecution.hpp"
+#include <Macro.h>
+#include "TensorUtils.hpp"
 
 namespace MNN {
 namespace OpenCL {
@@ -30,36 +30,19 @@ ErrorCode ReshapeExecution::onResize(const std::vector<Tensor *> &inputs, const 
     auto output = outputs[0];
 #ifdef LOG_VERBOSE
     MNN_PRINT("mDimType = %d , %d\n", mDimType, TensorUtils::getDescribe(input)->dimensionFormat);
-    MNN_PRINT("%d, %d, %d, %d -> %d, %d, %d, %d\n", input->batch(), input->width(), input->height(), input->channel(), output->batch(), output->width(),
+    MNN_PRINT("%d, %d, %d -> %d, %d, %d\n", input->width(), input->height(), input->channel(), output->width(),
               output->height(), output->channel());
 #endif
     auto runtime = mOpenCLBackend->getOpenCLRuntime();
     std::string mImageToBufferKernelname;
     std::string mBufferToImageKernelname;
-    {
-        auto inputFormat  = TensorUtils::getDescribe(input)->dimensionFormat;
-        std::map<MNN_DATA_FORMAT, std::string> formatMap = {
-            {MNN_DATA_FORMAT_NCHW, "image_to_nchw_buffer"},
-            {MNN_DATA_FORMAT_NHWC, "image_to_nhwc_buffer"},
-        };
-        if(inputFormat == MNN_DATA_FORMAT_NC4HW4){
-            mImageToBufferKernelname = formatMap[mDimType];
-        }else{
-            mImageToBufferKernelname = formatMap[inputFormat];
-        }
-    }
 
-    {
-        auto outputFormat = TensorUtils::getDescribe(output)->dimensionFormat;
-        std::map<MNN_DATA_FORMAT, std::string> formatMap = {
-            {MNN_DATA_FORMAT_NCHW, "nchw_buffer_to_image"},
-            {MNN_DATA_FORMAT_NHWC, "nhwc_buffer_to_image"},
-        };
-        if(outputFormat == MNN_DATA_FORMAT_NC4HW4){
-            mBufferToImageKernelname = formatMap[mDimType];
-        }else{
-            mBufferToImageKernelname = formatMap[outputFormat];
-        }
+    if (mDimType == MNN_DATA_FORMAT_NCHW) {
+        mImageToBufferKernelname = "image_to_nchw_buffer";
+        mBufferToImageKernelname = "nchw_buffer_to_image";
+    } else {
+        mImageToBufferKernelname = "image_to_nhwc_buffer";
+        mBufferToImageKernelname = "nhwc_buffer_to_image";
     }
 
     if (mImageToBufferKernel.get() == nullptr) {
@@ -142,7 +125,6 @@ ErrorCode ReshapeExecution::onExecute(const std::vector<Tensor *> &inputs, const
 #endif
     return NO_ERROR;
 }
-
 
 class ReshapeCreator : public OpenCLBackend::Creator {
 public:

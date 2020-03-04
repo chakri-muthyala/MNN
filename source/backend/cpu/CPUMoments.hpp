@@ -9,7 +9,7 @@
 #ifndef CPUMoments_hpp
 #define CPUMoments_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 

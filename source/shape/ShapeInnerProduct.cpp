@@ -6,8 +6,8 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
+#include "Macro.h"
+#include "SizeComputer.hpp"
 
 namespace MNN {
 class InnerProductComputer : public SizeComputer {
@@ -25,7 +25,6 @@ public:
         output->buffer().dimensions    = input->buffer().dimensions;
         output->buffer().dim[0].extent = input->buffer().dim[0].extent;
         output->buffer().dim[1].extent = parameter->outputCount();
-        output->buffer().type = halide_type_of<float>();
         TensorUtils::getDescribe(outputs[0])->dimensionFormat = TensorUtils::getDescribe(inputs[0])->dimensionFormat;
 
         return true;

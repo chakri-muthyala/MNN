@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/compute/ConvolutionIntFactory.hpp"
+#include "ConvolutionIntFactory.hpp"
 #include <math.h>
-#include "backend/cpu/compute/ConvolutionGroup.hpp"
-#include "backend/cpu/compute/ConvolutionInt8Executor.hpp"
+#include "ConvolutionGroup.hpp"
+#include "ConvolutionInt8Executor.hpp"
 #include "half.hpp"
 
 namespace MNN {
@@ -364,9 +364,7 @@ std::shared_ptr<ConvolutionIntFactory::Int8Common> ConvolutionIntFactory::load(c
     // read fp16 data
     if (3 == quan->type()) {
         weightLength    = quan->buffer()->size() / sizeof(half_float::half);
-        std::vector<int8_t> tempHalfWeight(quan->buffer()->size());
-        ::memcpy(tempHalfWeight.data(), quan->buffer()->data(), quan->buffer()->size());
-        auto halfWeight = reinterpret_cast<half_float::half *>(tempHalfWeight.data());
+        auto halfWeight = reinterpret_cast<half_float::half *>(originBuffer);
         result->weightFloat.reset(weightLength);
         if (nullptr == result->weightFloat.get()) {
             MNN_PRINT("Alloc memory error for extract fp16 back to float\n");

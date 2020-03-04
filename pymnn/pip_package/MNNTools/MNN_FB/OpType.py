@@ -7,7 +7,7 @@ class OpType(object):
     QuantizedAdd = 1
     ArgMax = 2
     AsString = 3
-    InstanceNorm = 4
+    BatchNorm = 4
     BatchToSpaceND = 5
     Bias = 6
     BinaryOp = 7
@@ -119,16 +119,8 @@ class OpType(object):
     Convolution3D = 113
     MatrixBandPart = 114
     GatherND = 115
-    DetectionPostProcess = 116
-    UnravelIndex = 117
-    ScatterNd = 118
-    OneHot = 119
-    BroadcastTo = 120
-    Dilation2D = 121
     MaxLayerCount = 128
     ConvertTensor = 129
-    ArgMin = 130
-    LinSpace = 131
     PLUGIN = 256
     Select = 257
     ZerosLike = 258
@@ -139,8 +131,6 @@ class OpType(object):
     PoolGrad = 263
     SoftmaxGrad = 264
     Conv2DBackPropFilter = 265
-    TrainableParam = 266
-    BatchNorm = 267
     Extra = 512
     ConvInt8 = 513
     Int8ToFloat = 514

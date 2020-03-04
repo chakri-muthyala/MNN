@@ -6,20 +6,20 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 #include <cmath>
 #include <mutex>
-#include "core/BufferAllocator.hpp"
-#include "backend/cpu/CPUConcat.hpp"
-#include "backend/cpu/CPUTensorConvert.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/TensorUtils.hpp"
-#include "backend/cpu/ThreadPool.hpp"
-#include "core/SizeComputer.hpp"
+#include "BufferAllocator.hpp"
+#include "CPUConcat.hpp"
+#include "CPUTensorConvert.hpp"
+#include "CommonOptFunction.h"
+#include "TensorUtils.hpp"
+#include "ThreadPool.hpp"
+#include "SizeComputer.hpp"
 #ifdef _OPENMP
 #include <omp.h>
 #endif // _OPENMP
-#include "backend/cpu/CPURuntime.hpp"
+#include "CPURuntime.hpp"
 
 #define MAX_THREAD_NUMBER 32
 
@@ -117,9 +117,6 @@ void CPUBackend::onExecuteEnd() const {
 }
 
 bool CPUBackend::onAcquireBuffer(const MNN::Tensor* nativeTensorConst, StorageType storageType) {
-    if (nativeTensorConst == nullptr) {
-        return false;
-    }
     auto nativeTensor = (Tensor*)nativeTensorConst;
     auto& buffer      = nativeTensor->buffer();
 
@@ -132,7 +129,7 @@ bool CPUBackend::onAcquireBuffer(const MNN::Tensor* nativeTensorConst, StorageTy
     }
     switch (storageType) {
         case STATIC: {
-            buffer.host = (uint8_t*)mStaticAllocator->alloc(size, false);
+            buffer.host = (uint8_t*)mStaticAllocator->alloc(size, true);
             break;
         }
         case DYNAMIC: {
@@ -157,14 +154,11 @@ bool CPUBackend::onAcquireBuffer(const MNN::Tensor* nativeTensorConst, StorageTy
 }
 
 bool CPUBackend::onReleaseBuffer(const MNN::Tensor* nativeTensor, StorageType storageType) {
-    if (nativeTensor == nullptr) {
-        return false;
-    }
     if (nullptr == nativeTensor->buffer().host) {
         return false;
     }
     if (STATIC == storageType) {
-        mStaticAllocator->free(nativeTensor->buffer().host);
+        mStaticAllocator->free(nativeTensor->buffer().host, true);
         return true;
     }
     if (DYNAMIC_SEPERATE == storageType) {
@@ -262,24 +256,14 @@ Execution* CPUBackend::onCreate(const std::vector<Tensor*>& inputs, const std::v
 }
 
 bool CPUBackend::onAllocateBuffer() {
-    mStaticAllocator->release(false);
     return true;
 }
 
 bool CPUBackend::onClearBuffer() {
-    mDynamicAllocator->release(true);
-    mStaticAllocator->release(false);
+    mDynamicAllocator->release();
     return true;
 }
-std::pair<int, int> CPUBackend::multiThreadDivide(int size) const {
-    int sizeDivide = size / mThreadNumber;
-    sizeDivide = UP_DIV(sizeDivide, 4) * 4;
-    int scheduleNumber = 1;
-    if (sizeDivide > 0) {
-        scheduleNumber = UP_DIV(size, sizeDivide);
-    }
-    return std::make_pair(sizeDivide, scheduleNumber);
-}
+
 void CPUBackend::onCopyBuffer(const Tensor* srcTensor, const Tensor* dstTensor) const {
     auto& srcBuffer = srcTensor->buffer();
     auto& dstBuffer = dstTensor->buffer();
@@ -295,10 +279,7 @@ void CPUBackend::onCopyBuffer(const Tensor* srcTensor, const Tensor* dstTensor) 
         return;
     }
 
-    auto code = CPUTensorConverter::convert(srcTensor, dstTensor);
-    if (NO_ERROR != code) {
-        MNN_ERROR("Error in CPUBackend::onCopyBuffer\n");
-    }
+    CPUTensorConverter::convert(srcTensor, dstTensor);
 }
 
 struct CPUBackendCreator : BackendCreator {

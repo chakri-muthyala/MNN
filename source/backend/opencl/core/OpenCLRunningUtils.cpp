@@ -6,11 +6,11 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opencl/core/OpenCLRunningUtils.hpp"
+#include "core/OpenCLRunningUtils.hpp"
 #include <algorithm>
 #include <string>
 #include <vector>
-#include "core/Macro.h"
+#include "Macro.h"
 
 namespace MNN {
 namespace OpenCL {
@@ -178,7 +178,7 @@ void runTurnKernelLWS2D(const ::cl::Kernel &kernel, const std::vector<uint32_t> 
 }
 
 void run3DKernelDefault(const ::cl::Kernel &kernel, const std::vector<uint32_t> &gws, const std::vector<uint32_t> &lws,
-                        OpenCLRuntime *runtime, cl::Event* eventPtr) {
+                        OpenCLRuntime *runtime) {
 #ifdef LOG_VERBOSE
     MNN_PRINT("start run3DKernelDefault !\n");
 #endif
@@ -190,16 +190,10 @@ void run3DKernelDefault(const ::cl::Kernel &kernel, const std::vector<uint32_t> 
     }
 
     cl_int error = CL_SUCCESS;
-    if(eventPtr == nullptr){
-        error        = runtime->commandQueue().enqueueNDRangeKernel(
-            kernel, cl::NullRange, cl::NDRange(internalGlobalWS[0], internalGlobalWS[1], internalGlobalWS[2]),
-            cl::NDRange(lws[0], lws[1], lws[2]));
+    error        = runtime->commandQueue().enqueueNDRangeKernel(
+        kernel, cl::NullRange, cl::NDRange(internalGlobalWS[0], internalGlobalWS[1], internalGlobalWS[2]),
+        cl::NDRange(lws[0], lws[1], lws[2]));
 
-    }else{
-        error        = runtime->commandQueue().enqueueNDRangeKernel(
-            kernel, cl::NullRange, cl::NDRange(internalGlobalWS[0], internalGlobalWS[1], internalGlobalWS[2]),
-            cl::NDRange(lws[0], lws[1], lws[2]), nullptr, eventPtr);
-    }
     MNN_CHECK_CL_SUCCESS(error);
 
 #ifdef LOG_VERBOSE
@@ -208,7 +202,7 @@ void run3DKernelDefault(const ::cl::Kernel &kernel, const std::vector<uint32_t> 
 }
 
 void runKernel2D(const ::cl::Kernel &kernel, const std::vector<uint32_t> &gws, const std::vector<uint32_t> &lws,
-                 OpenCLRuntime *runtime,  cl::Event* eventPtr) {
+                 OpenCLRuntime *runtime) {
 #ifdef LOG_VERBOSE
     MNN_PRINT("start run3DKernelDefault !\n");
 #endif
@@ -219,14 +213,9 @@ void runKernel2D(const ::cl::Kernel &kernel, const std::vector<uint32_t> &gws, c
     }
 
     cl_int error = CL_SUCCESS;
-    if(eventPtr == nullptr){
-        error        = runtime->commandQueue().enqueueNDRangeKernel(
-            kernel, cl::NullRange, cl::NDRange(internalGlobalWS[0], internalGlobalWS[1]), cl::NDRange(lws[0], lws[1]));
+    error        = runtime->commandQueue().enqueueNDRangeKernel(
+        kernel, cl::NullRange, cl::NDRange(internalGlobalWS[0], internalGlobalWS[1]), cl::NDRange(lws[0], lws[1]));
 
-    }else{
-        error        = runtime->commandQueue().enqueueNDRangeKernel(
-            kernel, cl::NullRange, cl::NDRange(internalGlobalWS[0], internalGlobalWS[1]), cl::NDRange(lws[0], lws[1]), nullptr, eventPtr);
-    }
     MNN_CHECK_CL_SUCCESS(error);
 
 #ifdef LOG_VERBOSE

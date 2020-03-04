@@ -6,9 +6,9 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/vulkan/execution/VulkanConcat.hpp"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "VulkanConcat.hpp"
+#include "Macro.h"
+#include "TensorUtils.hpp"
 namespace MNN {
 struct ConcatParam {
     ivec4 inImageSize;

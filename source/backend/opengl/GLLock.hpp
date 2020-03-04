@@ -8,7 +8,7 @@
 
 #ifndef GLLOCK_H
 #define GLLOCK_H
-#include "core/Macro.h"
+#include "Macro.h"
 namespace MNN {
 namespace OpenGL {
 class GLLock {

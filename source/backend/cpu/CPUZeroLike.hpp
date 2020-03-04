@@ -9,7 +9,7 @@
 #ifndef CPUZeroLike_hpp
 #define CPUZeroLike_hpp
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 namespace MNN {
 class CPUZeroLike : public Execution {
 public:

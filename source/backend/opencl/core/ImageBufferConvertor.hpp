@@ -9,9 +9,9 @@
 #ifndef ImageBufferConvertor_hpp
 #define ImageBufferConvertor_hpp
 
-#include "core/Macro.h"
-#include <MNN/Tensor.hpp>
-#include "backend/opencl/core/OpenCLRunningUtils.hpp"
+#include "Macro.h"
+#include "Tensor.hpp"
+#include "core/OpenCLRunningUtils.hpp"
 
 namespace MNN {
 namespace OpenCL {

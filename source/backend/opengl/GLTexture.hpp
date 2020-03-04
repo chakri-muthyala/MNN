@@ -9,7 +9,7 @@
 #ifndef GLTEXTURE_H
 #define GLTEXTURE_H
 /*Basic GLTexture, has no mipmap and just support ARGB GLTexture*/
-#include "backend/opengl/GLHead.hpp"
+#include "GLHead.hpp"
 namespace MNN {
 namespace OpenGL {
 class GLTexture {

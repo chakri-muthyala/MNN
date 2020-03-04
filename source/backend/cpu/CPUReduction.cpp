@@ -6,12 +6,9 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUReduction.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "backend/cpu/compute/ConvOpt.h"
-#include "core/Concurrency.h"
-#include "core/Macro.h"
-#include <cmath>
+#include "CPUReduction.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
 
 #define UNIT 4
 #define UNIT_DUP(value) \
@@ -22,6 +19,7 @@ class Reduction : public Execution {
 public:
     Reduction(Backend* backend, const Op* op) : Execution(backend) {
         auto reduct = op->main_as_ReductionParam();
+        mdataType   = reduct->dType();
 
         if (nullptr == reduct->dim()) {
             return;
@@ -55,12 +53,11 @@ public:
     virtual ErrorCode onExecute(const std::vector<Tensor*>& inputs, const std::vector<Tensor*>& outputs) override {
         auto input  = inputs[0];
         auto output = outputs[0];
-        auto typeCode = input->getType().code;
         if (mAxis.empty()) {
             int size = (int)input->size() / input->buffer().type.bytes();
-            if (halide_type_float == typeCode) {
+            if (MNN::DataType_DT_FLOAT == mdataType) {
                 this->onReduce(input->host<float>(), output->host<float>(), 1, 1, size);
-            } else if (halide_type_int == typeCode) {
+            } else if (MNN::DataType_DT_INT32 == mdataType) {
                 this->onReduce(input->host<int32_t>(), output->host<int32_t>(), 1, 1, size);
             }
             return NO_ERROR;
@@ -124,6 +121,7 @@ protected:
     virtual void onReduce(const float* src, float* dst, int inside, int outside, int axis) const     = 0;
     virtual void onReduce(const int32_t* src, int32_t* dst, int inside, int outsize, int axis) const = 0;
     std::vector<int> mAxis;
+    MNN::DataType mdataType;
     std::vector<std::unique_ptr<Tensor>> mMidBuffer;
 };
 
@@ -136,35 +134,19 @@ public:
 
 protected:
     virtual void onReduce(const float* src, float* dst, int inside, int outside, int axisSize) const override {
-        auto numberThread = ((CPUBackend*)backend())->threadNumber();
-        MNN_CONCURRENCY_BEGIN(tId, numberThread) {
-            for (int oi = tId; oi < outside; oi+=numberThread) {
-                auto srcOutSide = src + oi * axisSize * inside;
-                auto dstOutSide = dst + oi * inside;
-                if (inside % 4 == 0) {
-                    ::memcpy(dstOutSide, srcOutSide, inside * sizeof(float));
-                    for (int a = 1; a < axisSize; ++a) {
-                        auto srcAxis = srcOutSide + a * inside;
-                        MNNMatrixAddCommon(dstOutSide, dstOutSide, srcAxis, inside, 0, 0, 0, 1);
-                    }
-                    float divide = 1.0f / (float)axisSize;
-                    for (int i=0; i<inside; ++i) {
-                        dstOutSide[i] = dstOutSide[i] * divide;
-                    }
-                } else {
-                    for (int ii = 0; ii < inside; ++ii) {
-                        auto srcInside = srcOutSide + ii;
-                        auto dstInside = dstOutSide + ii;
-                        float summer   = 0.0f;
-                        for (int a = 0; a < axisSize; ++a) {
-                            summer += srcInside[a * inside];
-                        }
-                        *dstInside = summer / (float)axisSize;
-                    }
+        for (int oi = 0; oi < outside; ++oi) {
+            auto srcOutSide = src + oi * axisSize * inside;
+            auto dstOutSide = dst + oi * inside;
+            for (int ii = 0; ii < inside; ++ii) {
+                auto srcInside = srcOutSide + ii;
+                auto dstInside = dstOutSide + ii;
+                float summer   = 0.0f;
+                for (int a = 0; a < axisSize; ++a) {
+                    summer += srcInside[a * inside];
                 }
+                *dstInside = summer / (float)axisSize;
             }
         }
-        MNN_CONCURRENCY_END();
     }
 
     virtual void onReduce(const int32_t* src, int32_t* dst, int inside, int outside, int axisSize) const override {
@@ -193,31 +175,19 @@ public:
 
 protected:
     virtual void onReduce(const float* src, float* dst, int inside, int outside, int axisSize) const override {
-        auto numberThread = ((CPUBackend*)backend())->threadNumber();
-        MNN_CONCURRENCY_BEGIN(tId, numberThread) {
-            for (int oi = tId; oi < outside; oi+=numberThread) {
-                auto srcOutSide = src + oi * axisSize * inside;
-                auto dstOutSide = dst + oi * inside;
-                if (inside % 4 == 0) {
-                    ::memcpy(dstOutSide, srcOutSide, inside * sizeof(float));
-                    for (int a = 1; a < axisSize; ++a) {
-                        auto srcAxis = srcOutSide + a * inside;
-                        MNNMatrixAddCommon(dstOutSide, dstOutSide, srcAxis, inside, 0, 0, 0, 1);
-                    }
-                } else {
-                    for (int ii = 0; ii < inside; ++ii) {
-                        auto srcInside = srcOutSide + ii;
-                        auto dstInside = dstOutSide + ii;
-                        float summer   = 0.0f;
-                        for (int a = 0; a < axisSize; ++a) {
-                            summer += srcInside[a * inside];
-                        }
-                        *dstInside = summer;
-                    }
+        for (int oi = 0; oi < outside; ++oi) {
+            auto srcOutSide = src + oi * axisSize * inside;
+            auto dstOutSide = dst + oi * inside;
+            for (int ii = 0; ii < inside; ++ii) {
+                auto srcInside = srcOutSide + ii;
+                auto dstInside = dstOutSide + ii;
+                float summer   = 0.0f;
+                for (int a = 0; a < axisSize; ++a) {
+                    summer += srcInside[a * inside];
                 }
+                *dstInside = summer;
             }
         }
-        MNN_CONCURRENCY_END();
     }
 
     virtual void onReduce(const int32_t* src, int32_t* dst, int inside, int outside, int axisSize) const override {
@@ -407,7 +377,7 @@ protected:
     virtual void onReduce(const float* src, float* dst, int inside, int outside, int axisSize) const override {
         MNN_ASSERT(false);
     }
-
+    
     virtual void onReduce(const int32_t* src, int32_t* dst, int inside, int outside, int axisSize) const override {
         for (int oi = 0; oi < outside; ++oi) {
             auto srcOutSide = src + oi * axisSize * inside;
@@ -438,7 +408,7 @@ protected:
     virtual void onReduce(const float* src, float* dst, int inside, int outside, int axisSize) const override {
         MNN_ASSERT(false);
     }
-
+    
     virtual void onReduce(const int32_t* src, int32_t* dst, int inside, int outside, int axisSize) const override {
         for (int oi = 0; oi < outside; ++oi) {
             auto srcOutSide = src + oi * axisSize * inside;

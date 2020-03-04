@@ -6,16 +6,16 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUArgMax.hpp"
+#include "CPUArgMax.hpp"
 #include <float.h>
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/TensorUtils.hpp"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "TensorUtils.hpp"
 
 namespace MNN {
 
-CPUArgMax::CPUArgMax(Backend *backend, ArgMinOrMax mode, int topk, int outMaxVal, int softmaxThreshold, int axis)
-    : Execution(backend), mTopk(topk), mOutMaxVal(outMaxVal), mSoftmaxThreshold(softmaxThreshold), mAxis(axis), mMode(mode) {
+CPUArgMax::CPUArgMax(Backend *backend, int topk, int outMaxVal, int softmaxThreshold, int axis)
+    : Execution(backend), mTopk(topk), mOutMaxVal(outMaxVal), mSoftmaxThreshold(softmaxThreshold), mAxis(axis) {
     // nothing to do
 }
 
@@ -25,7 +25,7 @@ ErrorCode CPUArgMax::onResize(const std::vector<Tensor *> &inputs, const std::ve
     auto output               = outputs[0];
     auto inputDimensionFromat = TensorUtils::getDescribe(input)->dimensionFormat;
 
-    mFromNHWC = inputDimensionFromat != MNN_DATA_FORMAT_NC4HW4;
+    mFromNHWC = inputDimensionFromat == MNN_DATA_FORMAT_NHWC;
 
     if (!mFromNHWC) {
         // if the input format is NC4HW4, convert to be NCHW from NC4HW4 firstly
@@ -44,7 +44,7 @@ ErrorCode CPUArgMax::onResize(const std::vector<Tensor *> &inputs, const std::ve
     mNum       = 1;
     mDim       = 1;
     mKeyExtent = 1;
-
+    
     if(mAxis < 0){
         mAxis = mAxis + input->dimensions();
     }
@@ -95,50 +95,24 @@ ErrorCode CPUArgMax::onExecute(const std::vector<Tensor *> &inputs, const std::v
     };
 
     if (mFromNHWC) {
-        if (mMode == ARGMAX) {
-            auto srcOrigin = input->host<float>();
-            auto dstOrigin = output->host<int>();
-            for (int i = 0; i < mNum; ++i) {
-                auto iptr = srcOrigin + i * mDim * mKeyExtent;
-                auto optr = dstOrigin + i * mKeyExtent;
+        auto srcOrigin = input->host<float>();
+        auto dstOrigin = output->host<int>();
+        for (int i = 0; i < mNum; ++i) {
+            auto iptr = srcOrigin + i * mDim * mKeyExtent;
+            auto optr = dstOrigin + i * mKeyExtent;
 
-                for(int k = 0; k < mKeyExtent; ++k){
-                    int index      = 0;
-                    float maxValue = -FLT_MAX;
-                    for (int j = 0; j < mDim; ++j) {
-                        auto val = iptr[k + j * mKeyExtent];
-                        if (val > maxValue) {
-                            maxValue = val;
-                            index    = j;
-                        }
-                    }
-                    optr[k] = index;
+            int index      = 0;
+            float maxValue = -FLT_MAX;
+            for (int j = 0; j < mDim; ++j) {
+                auto val = iptr[j * mKeyExtent];
+                if (val > maxValue) {
+                    maxValue = val;
+                    index    = j;
                 }
             }
-        } else {
-            auto srcOrigin = input->host<float>();
-            auto dstOrigin = output->host<int>();
-            for (int i = 0; i < mNum; ++i) {
-                auto iptr = srcOrigin + i * mDim * mKeyExtent;
-                auto optr = dstOrigin + i * mKeyExtent;
-
-                for(int k = 0; k < mKeyExtent; ++k){
-                    int index      = 0;
-                    float minValue = FLT_MAX;
-                    for (int j = 0; j < mDim; ++j) {
-                        auto val = iptr[k + j * mKeyExtent];
-                        if (val < minValue) {
-                            minValue = val;
-                            index    = j;
-                        }
-                    }
-                    optr[k] = index;
-                }
-            }
+            optr[0] = index;
         }
-
     } else {
-        MNN_ASSERT(mMode == ARGMAX); // caffe does not have argmin layer
         // Legacy code for CAFFE
         backend()->onCopyBuffer(input, &mInputBuffer);
 
@@ -203,15 +177,8 @@ public:
     virtual Execution *onCreate(const std::vector<Tensor *> &inputs, const std::vector<Tensor *> &outputs,
                                 const MNN::Op *op, Backend *backend) const {
         auto argMax = op->main_as_ArgMax();
-        if (op->type() == OpType_ArgMin) {
-            return new CPUArgMax(backend, CPUArgMax::ArgMinOrMax::ARGMIN,
-                    argMax->topK(), argMax->outMaxVal(), argMax->softmaxThreshold(), argMax->axis());
-        } else {
-            return new CPUArgMax(backend, CPUArgMax::ArgMinOrMax::ARGMAX,
-                    argMax->topK(), argMax->outMaxVal(), argMax->softmaxThreshold(), argMax->axis());
-        }
+        return new CPUArgMax(backend, argMax->topK(), argMax->outMaxVal(), argMax->softmaxThreshold(), argMax->axis());
     }
 };
 REGISTER_CPU_OP_CREATOR(CPUArgMaxCreator, OpType_ArgMax);
-REGISTER_CPU_OP_CREATOR(CPUArgMaxCreator, OpType_ArgMin);
 } // namespace MNN

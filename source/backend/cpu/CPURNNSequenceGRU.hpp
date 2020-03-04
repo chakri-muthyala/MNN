@@ -9,7 +9,7 @@
 #ifndef CPURNNSequenceGRU_hpp
 #define CPURNNSequenceGRU_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 

@@ -7,7 +7,7 @@
 //
 
 #include <stdio.h>
-#include "core/AutoStorage.h"
+#include "AutoStorage.h"
 #include "MNNTestSuite.h"
 
 using namespace MNN;

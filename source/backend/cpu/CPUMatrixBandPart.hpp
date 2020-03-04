@@ -8,7 +8,7 @@
 #ifndef CPUMatrixBandPart_hpp
 #define CPUMatrixBandPart_hpp
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 namespace MNN {
 
 class CPUMatrixBandPart : public Execution {

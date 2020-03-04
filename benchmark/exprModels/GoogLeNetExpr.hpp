@@ -10,7 +10,7 @@
 #ifndef GoogLeNetExpr_hpp
 #define GoogLeNetExpr_hpp
 
-#include <MNN/expr/Expr.hpp>
+#include "Expr.hpp"
 
 MNN::Express::VARP googLeNetExpr(int numClass);
 

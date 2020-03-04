@@ -9,7 +9,7 @@
 #include <string.h>
 #include <fstream>
 #include <sstream>
-#include <MNN/MNNDefine.h>
+#include "MNNDefine.h"
 #include "math/Matrix.hpp"
 #include "math/WingoradGenerater.hpp"
 

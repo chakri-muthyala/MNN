@@ -6,9 +6,9 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUTopKV2.hpp"
-#include "backend/cpu/CPUBackend.hpp"
-#include "core/Macro.h"
+#include "CPUTopKV2.hpp"
+#include "CPUBackend.hpp"
+#include "Macro.h"
 
 namespace MNN {
 
@@ -105,11 +105,6 @@ ErrorCode CPUTopKV2::onExecute(const std::vector<Tensor*>& inputs, const std::ve
         auto topkData    = outputData->host<float>();
         int* indicesData = outputIndices->host<int32_t>();
         findTopK<float>(rowSize, numRows, inputData, k, indicesData, topkData);
-    } else if(halide_type_int == inputTensor->getType().code && 32 == inputTensor->getType().bits) {
-        auto inputData   = inputTensor->host<int32_t>();
-        auto topkData    = outputData->host<int32_t>();
-        int* indicesData = outputIndices->host<int32_t>();
-        findTopK<int32_t>(rowSize, numRows, inputData, k, indicesData, topkData);
     } else {
         MNN_PRINT("TODO\n");
         MNN_ASSERT(false);

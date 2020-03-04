@@ -9,14 +9,14 @@
 #ifndef ConvExecution_hpp
 #define ConvExecution_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 #include <array>
 #include <functional>
 #include <memory>
 #include <vector>
-#include "backend/opencl/core/OpenCLBackend.hpp"
-#include "backend/opencl/core/OpenCLRunningUtils.hpp"
+#include "core/OpenCLBackend.hpp"
+#include "core/OpenCLRunningUtils.hpp"
 namespace MNN {
 namespace OpenCL {
 

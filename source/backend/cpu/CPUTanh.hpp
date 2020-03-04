@@ -9,7 +9,7 @@
 #ifndef CPUTanh_hpp
 #define CPUTanh_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUTanh : public Execution {

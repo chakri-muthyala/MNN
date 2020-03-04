@@ -9,8 +9,8 @@
 #ifndef CPUInt8ToFloat_hpp
 #define CPUInt8ToFloat_hpp
 
-#include "core/Execution.hpp"
-#include <MNN/Tensor.hpp>
+#include "Execution.hpp"
+#include "Tensor.hpp"
 
 namespace MNN {
 

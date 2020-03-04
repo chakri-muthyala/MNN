@@ -1,4 +1,4 @@
-#include "backend/cpu/CPUBackend.hpp"
+#include "CPUBackend.hpp"
 namespace MNN {
     class CPUGatherND : public Execution {
     public:

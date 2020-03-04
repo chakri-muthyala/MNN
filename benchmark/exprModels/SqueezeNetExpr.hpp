@@ -10,7 +10,7 @@
 #ifndef SqueezeNetExpr_hpp
 #define SqueezeNetExpr_hpp
 
-#include <MNN/expr/Expr.hpp>
+#include "Expr.hpp"
 
 MNN::Express::VARP squeezeNetExpr(int numClass);
 

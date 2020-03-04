@@ -21,7 +21,7 @@ limitations under the License.
 #include <limits>
 #include <stdexcept>
 #include <algorithm>
-#include "core/Macro.h"
+#include "Macro.h"
 #ifdef MNN_USE_NEON
 #include <arm_neon.h>
 #endif

@@ -9,19 +9,19 @@
 #include <stdio.h>
 #include "onnxOpConverter.hpp"
 
-DECLARE_OP_CONVERTER(GemmOnnx);
+DECLARE_OP_CONVERTER(MatMulOnnx);
 
-MNN::OpType GemmOnnx::opType() {
+MNN::OpType MatMulOnnx::opType() {
     return MNN::OpType_InnerProduct;
 }
-MNN::OpParameter GemmOnnx::type() {
+MNN::OpParameter MatMulOnnx::type() {
     return MNN::OpParameter_InnerProduct;
 }
 
-void GemmOnnx::run(MNN::OpT* dstOp, const onnx::NodeProto* onnxNode,
+void MatMulOnnx::run(MNN::OpT* dstOp, const onnx::NodeProto* onnxNode,
                      std::vector<const onnx::TensorProto*> initializers) {
     const int size = initializers.size();
-    DCHECK(size <= 2 && size >= 1) << "Gemm Input ERROR!";
+    DCHECK(size <= 2 && size >= 1) << "Gemm/MatMul Input ERROR!";
     auto gemmParam = new MNN::InnerProductT;
 
     bool transA = false;
@@ -131,26 +131,4 @@ void GemmOnnx::run(MNN::OpT* dstOp, const onnx::NodeProto* onnxNode,
     dstOp->main.value = gemmParam;
 }
 
-//REGISTER_CONVERTER(GemmOnnx, Gemm);
-
-
-DECLARE_OP_CONVERTER(MatMulOnnx);
-
-MNN::OpType MatMulOnnx::opType(){
-    return MNN::OpType_MatMul;
-}
-
-MNN::OpParameter MatMulOnnx::type(){
-    return MNN::OpParameter_MatMul;
-}
-
-void MatMulOnnx::run(MNN::OpT *dstOp, const onnx::NodeProto *onnxNode, std::vector<const onnx::TensorProto *> initializers){
-    
-    CHECK(2 == onnxNode->input_size()) << "ONNX Matmul input error!";
-    auto param = new MNN::MatMulT;
-    param->T = MNN::DataType_DT_FLOAT;
-    
-    dstOp->main.value = param;
-}
-
-REGISTER_CONVERTER(MatMulOnnx, MatMul);
+REGISTER_CONVERTER(MatMulOnnx, Gemm);

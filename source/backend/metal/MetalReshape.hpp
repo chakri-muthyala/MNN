@@ -10,7 +10,7 @@
 #define MetalReshape_hpp
 
 #include <memory>
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 #include "MetalDefine.h"
 #include "Tensor_generated.h"
 

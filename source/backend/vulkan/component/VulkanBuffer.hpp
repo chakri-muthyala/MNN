@@ -8,7 +8,7 @@
 
 #ifndef VulkanBuffer_hpp
 #define VulkanBuffer_hpp
-#include "backend/vulkan/component/VulkanMemoryPool.hpp"
+#include "VulkanMemoryPool.hpp"
 namespace MNN {
 class VulkanBuffer : public NonCopyable {
 public:

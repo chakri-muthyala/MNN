@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opencl/execution/PoolExecution.hpp"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
-#include "backend/opencl/core/OpenCLBackend.hpp"
+#include "execution/PoolExecution.hpp"
+#include <Macro.h>
+#include "TensorUtils.hpp"
+#include "core/OpenCLBackend.hpp"
 
 namespace MNN {
 namespace OpenCL {

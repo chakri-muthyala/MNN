@@ -11,12 +11,12 @@
 #include <cstring>
 #include <memory>
 #include <string>
-#include <MNN/AutoTime.hpp>
-#include <MNN/Interpreter.hpp>
-#include <MNN/MNNDefine.h>
-#include "core/Macro.h"
+#include "AutoTime.hpp"
+#include "Interpreter.hpp"
+#include "MNNDefine.h"
+#include "Macro.h"
 #include "Profiler.hpp"
-#include <MNN/Tensor.hpp>
+#include "Tensor.hpp"
 #include "revertMNNModel.hpp"
 
 #define MNN_PRINT_TIME_BY_NAME

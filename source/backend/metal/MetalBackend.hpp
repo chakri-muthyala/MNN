@@ -9,7 +9,7 @@
 #ifndef MetalBackend_hpp
 #define MetalBackend_hpp
 
-#include "core/Backend.hpp"
+#include "Backend.hpp"
 #include "MNN_generated.h"
 #include "MetalDefine.h"
 

@@ -7,9 +7,9 @@
 //
 
 #include <math.h>
-#include "core/Macro.h"
-#include "core/SizeComputer.hpp"
-#include "core/TensorUtils.hpp"
+#include "Macro.h"
+#include "SizeComputer.hpp"
+#include "TensorUtils.hpp"
 namespace MNN {
 class Convolution3DSizeComputer : public SizeComputer {
 public:

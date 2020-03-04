@@ -6,7 +6,7 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "core/SizeComputer.hpp"
+#include "SizeComputer.hpp"
 
 namespace MNN {
 class MomentsComputer : public SizeComputer {
@@ -20,8 +20,8 @@ public:
         auto mean         = outputs[0];
         auto variance     = outputs[1];
         auto momentsParam = op->main_as_MomentsParam();
-        mean->buffer().type = input->getType();;
-        variance->buffer().type = input->getType();
+        mean->setType(momentsParam->dType());
+        variance->setType(momentsParam->dType());
         if (nullptr == momentsParam->dim()) {
             mean->buffer().dimensions     = 0;
             variance->buffer().dimensions = 0;

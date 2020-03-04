@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUInterp.hpp"
+#include "CPUInterp.hpp"
 #include <math.h>
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/CPUResize.hpp"
+#include "CPUBackend.hpp"
+#include "CPUResize.hpp"
 
 namespace MNN {
 
@@ -22,13 +22,12 @@ static int CLAMP(int v, int min, int max) {
     return v;
 }
 
-CPUInterp::CPUInterp(Backend *backend, float widthScale, float heightScale, int resizeType, bool AlignCorners, bool halfPixelCenters)
+CPUInterp::CPUInterp(Backend *backend, float widthScale, float heightScale, int resizeType, bool AlignCorners)
     : CPUResizeCommon(backend),
       mWidthScale(widthScale),
       mHeightScale(heightScale),
       mResizeType(resizeType),
-      mAlignCorners(AlignCorners),
-      mHalfPixelCenters(halfPixelCenters) {
+      mAlignCorners(AlignCorners) {
     // nothing to do
 }
 
@@ -41,7 +40,7 @@ ErrorCode CPUInterp::onExecute(const std::vector<Tensor *> &inputs, const std::v
 
     if (mResizeType == 1) {
         // Nearstneighbor
-        CPUResizeNearestneighborC4(input, output, mWidthScale, mHeightScale);
+        CPUReiseNearstneighborC4(input, output, mWidthScale, mHeightScale);
     } else if (mResizeType == 2) {
         // bilinear
         CPUResizeBilinearC4(input, output, mWidthPosition.host<int>(), mWidthFactor.host<float>(),
@@ -64,16 +63,8 @@ ErrorCode CPUInterp::onResize(const std::vector<Tensor *> &inputs, const std::ve
     const int outH = outputs[0]->buffer().dim[2].extent;
 
     if (mAlignCorners) {
-        if (outH == 1) {
-            mHeightScale = 0.0f;
-        } else {
-            mHeightScale = (float)(inH - 1) / (float)(outH - 1);
-        }
-        if (outW == 1) {
-            mWidthScale = 0.0f;
-        } else {
-            mWidthScale  = (float)(inW - 1) / (float)(outW - 1);
-        }
+        mHeightScale = (float)(inH - 1) / (float)(outH - 1);
+        mWidthScale  = (float)(inW - 1) / (float)(outW - 1);
     } else {
         mHeightScale = (float)(inH) / (float)(outH);
         mWidthScale  = (float)(inW) / (float)(outW);
@@ -97,12 +88,7 @@ ErrorCode CPUInterp::onResize(const std::vector<Tensor *> &inputs, const std::ve
 
     // Compute Line Position
     for (int x = 0; x < outW; ++x) {
-        float srcX;
-        if (mHalfPixelCenters) {
-            srcX = (x + 0.5) * xScaling - 0.5;
-        } else {
-            srcX = x * xScaling;
-        }
+        float srcX     = x * xScaling;
         int x1         = floor(srcX);
         float x2Factor = srcX - x1;
 
@@ -125,12 +111,7 @@ ErrorCode CPUInterp::onResize(const std::vector<Tensor *> &inputs, const std::ve
     auto _hFactor   = mHeightFactor.host<float>();
 
     for (int y = 0; y < outH; ++y) {
-        float srcY;
-        if (mHalfPixelCenters) {
-            srcY = (y + 0.5) * yScaling - 0.5;
-        } else {
-            srcY = y * yScaling;
-        }
+        float srcY     = y * yScaling;
         int y1         = floor(srcY);
         float y2Factor = srcY - y1;
 
@@ -156,7 +137,7 @@ public:
                                 const MNN::Op *op, Backend *backend) const {
         auto interp = op->main_as_Interp();
         return new CPUInterp(backend, interp->widthScale(), interp->heightScale(), interp->resizeType(),
-                             interp->alignCorners(), interp->halfPixelCenters());
+                             interp->alignCorners());
     }
 };
 REGISTER_CPU_OP_CREATOR(CPUInterpCreator, OpType_Interp);

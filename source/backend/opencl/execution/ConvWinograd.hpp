@@ -9,12 +9,12 @@
 #ifndef conv_winograd_hpp
 #define conv_winograd_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 #include <array>
 #include <memory>
 #include <vector>
-#include "backend/opencl/execution/ConvExecution.hpp"
+#include "execution/ConvExecution.hpp"
 namespace MNN {
 namespace OpenCL {
 class ConvWinograd : public Execution {

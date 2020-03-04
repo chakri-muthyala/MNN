@@ -12,11 +12,11 @@
 
 // edited from tensorflow - non_max_suppression_op.cc by MNN.
 
-#include "backend/cpu/CPUNonMaxSuppressionV2.hpp"
+#include "CPUNonMaxSuppressionV2.hpp"
 #include <math.h>
 #include <queue>
-#include "backend/cpu/CPUBackend.hpp"
-#include "core/Macro.h"
+#include "CPUBackend.hpp"
+#include "Macro.h"
 
 namespace MNN {
 

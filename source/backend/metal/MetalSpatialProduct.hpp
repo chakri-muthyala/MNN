@@ -9,7 +9,7 @@
 #ifndef MetalSpatialProduct_hpp
 #define MetalSpatialProduct_hpp
 
-#import "core/Execution.hpp"
+#import "Execution.hpp"
 #import "MetalDefine.h"
 
 #if MNN_METAL_ENABLED

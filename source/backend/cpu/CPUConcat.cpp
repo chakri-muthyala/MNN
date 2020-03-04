@@ -6,11 +6,11 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUConcat.hpp"
-#include "backend/cpu/CPUBackend.hpp"
-#include "backend/cpu/compute/CommonOptFunction.h"
-#include "core/Macro.h"
-#include "core/TensorUtils.hpp"
+#include "CPUConcat.hpp"
+#include "CPUBackend.hpp"
+#include "CommonOptFunction.h"
+#include "Macro.h"
+#include "TensorUtils.hpp"
 using namespace std;
 
 namespace MNN {

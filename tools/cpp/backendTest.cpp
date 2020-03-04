@@ -17,10 +17,10 @@
 #include <map>
 #include <sstream>
 #include <string>
-#include <MNN/AutoTime.hpp>
-#include <MNN/Interpreter.hpp>
-#include <MNN/Tensor.hpp>
-#include "core/TensorUtils.hpp"
+#include "AutoTime.hpp"
+#include "Interpreter.hpp"
+#include "Tensor.hpp"
+#include "TensorUtils.hpp"
 
 using namespace MNN;
 

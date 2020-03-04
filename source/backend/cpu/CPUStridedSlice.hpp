@@ -9,8 +9,9 @@
 #ifndef CPUStridedSlice_hpp
 #define CPUStridedSlice_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 #include "MNN_generated.h"
+
 namespace MNN {
 class CPUStridedSlice : public Execution {
 public:

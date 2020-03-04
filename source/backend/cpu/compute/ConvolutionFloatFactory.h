@@ -9,7 +9,7 @@
 #ifndef ConvolutionFloatFactory_h
 #define ConvolutionFloatFactory_h
 
-#include "backend/cpu/CPUBackend.hpp"
+#include "../CPUBackend.hpp"
 
 namespace MNN {
 class ConvolutionFloatFactory {

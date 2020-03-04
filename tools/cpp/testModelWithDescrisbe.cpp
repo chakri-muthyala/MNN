@@ -9,20 +9,21 @@
 #define MNN_OPEN_TIME_TRACE
 
 #include <math.h>
+#include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
 #include <fstream>
 #include <map>
 #include <sstream>
-#include <MNN/AutoTime.hpp>
-#include "core/Backend.hpp"
+#include "AutoTime.hpp"
+#include "Backend.hpp"
 #include "Config.hpp"
-#include <MNN/Interpreter.hpp>
-#include <MNN/MNNDefine.h>
-#include "core/Macro.h"
-#include <MNN/Tensor.hpp>
-#include "core/TensorUtils.hpp"
+#include "Interpreter.hpp"
+#include "MNNDefine.h"
+#include "Macro.h"
+#include "Tensor.hpp"
+#include "TensorUtils.hpp"
 
 #define NONE "\e[0m"
 #define RED "\e[0;31m"

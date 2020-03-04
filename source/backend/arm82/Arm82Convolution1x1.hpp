@@ -8,8 +8,8 @@
 
 #ifndef Arm82Convolution1x1_hpp
 #define Arm82Convolution1x1_hpp
-#include "backend/cpu/CPUConvolution.hpp"
-#include "core/Execution.hpp"
+#include "CPUConvolution.hpp"
+#include "Execution.hpp"
 namespace MNN {
 class Arm82Convolution1x1 : public Execution {
 public:

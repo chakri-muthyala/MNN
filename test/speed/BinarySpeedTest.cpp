@@ -8,11 +8,9 @@
 
 #include <random>
 #include <math.h>
-#include <MNN/expr/Expr.hpp>
-#include <MNN/expr/ExprCreator.hpp>
-#include <MNN/expr/Optimizer.hpp>
+#include "ExprCreator.hpp"
 #define MNN_OPEN_TIME_TRACE
-#include <MNN/AutoTime.hpp>
+#include "AutoTime.hpp"
 #include "MNNTestSuite.h"
 using namespace MNN::Express;
 #define WIDTH 5001
@@ -20,36 +18,10 @@ using namespace MNN::Express;
 #define TIME 100
 class BinarySpeedTest : public MNNTestCase {
 public:
-    void SubScalarTest() {
-        auto input0 = _Input({WIDTH, HEIGHT}, NCHW);
-        auto input1 = _Input({}, NCHW);
-        auto output = input0 - input1;
-        {
-            AUTOTIME;
-            for (int i=0; i<TIME; ++i) {
-                input0->writeMap<float>();
-                input1->writeMap<float>();
-                output->readMap<float>();
-            }
-        }
-    }
-    void AddScalarTest() {
-        auto input0 = _Input({}, NCHW);
-        auto input1 = _Input({WIDTH, HEIGHT}, NCHW);
-        auto output = input0 + input1;
-        {
-            AUTOTIME;
-            for (int i=0; i<TIME; ++i) {
-                input0->writeMap<float>();
-                input1->writeMap<float>();
-                output->readMap<float>();
-            }
-        }
-    }
     void SubTest() {
         auto input0 = _Input({WIDTH, HEIGHT});
         auto input1 = _Input({WIDTH, HEIGHT});
-        auto output = input0 - input1;
+        auto output = _Sub(input0, input1);
         {
             AUTOTIME;
             for (int i=0; i<TIME; ++i) {
@@ -62,7 +34,7 @@ public:
     void AddTest() {
         auto input0 = _Input({WIDTH, HEIGHT});
         auto input1 = _Input({WIDTH, HEIGHT});
-        auto output = input0 + input1;
+        auto output = _Add(input0, input1);
         {
             AUTOTIME;
             for (int i=0; i<TIME; ++i) {
@@ -72,13 +44,13 @@ public:
             }
         }
     }
-
+    
     virtual bool run() {
         printf("Test Binary for %d, %d x %d\n", WIDTH, HEIGHT, TIME);
         auto input0 = _Input({WIDTH, HEIGHT}, NHWC);
         auto input1 = _Input({WIDTH, HEIGHT}, NHWC);
-        auto subOutput = input0 - input1;
-        auto addOutput = input0 + input1;
+        auto subOutput = _Sub(input0, input1);
+        auto addOutput = _Add(input0, input1);
         //Check Result
         {
             for (int i=0; i<2; ++i) {
@@ -109,8 +81,6 @@ public:
         }
         SubTest();
         AddTest();
-        SubScalarTest();
-        AddScalarTest();
         return true;
     }
 };

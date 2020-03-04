@@ -8,7 +8,7 @@
 
 #ifndef GLUTILS_H
 #define GLUTILS_H
-#include "core/Macro.h"
+#include "Macro.h"
 #include <vector>
 #include <string>
 namespace MNN {

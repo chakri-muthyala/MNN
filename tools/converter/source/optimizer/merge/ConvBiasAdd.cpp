@@ -13,10 +13,8 @@
 namespace MNN {
 namespace Express {
 static auto gRegister = []() {
-    auto compare = [](EXPRP expr) {
-        if (nullptr == expr->get()) {
-            return false;
-        }
+    auto compare = [](VARP var) {
+        auto expr = var->expr().first;
         if (expr->get()->type() != OpType_BinaryOp) {
             return false;
         }
@@ -25,9 +23,6 @@ static auto gRegister = []() {
         }
         auto inputs = expr->inputs();
         auto inputExpr = inputs[0]->expr().first;
-        if (nullptr == inputExpr->get()) {
-            return false;
-        }
         if (inputExpr->get()->main_type() != OpParameter_Convolution2D || inputExpr->outputs().size() != 1) {
             return false;
         }
@@ -45,7 +40,8 @@ static auto gRegister = []() {
         }
         return true;
     };
-    auto modify = [](EXPRP expr) {
+    auto modify = [](VARP var) {
+        auto expr = var->expr().first;
         auto inputs = expr->inputs();
         auto inputExpr = inputs[0]->expr().first;
         auto biasVar = inputs[1];
@@ -58,8 +54,16 @@ static auto gRegister = []() {
             biasData[i] += biasPtr[i];
         }
         auto newExpr = Expr::create(convOp.get(), inputExpr->inputs());
-        newExpr->setName(expr->name());
-        Expr::replace(expr, newExpr);
+        newExpr->setName(var->expr().first->name());
+        auto outputs = var->expr().first->outputs();
+        for (auto weakVar : outputs) {
+            auto var = weakVar.lock();
+            if (nullptr == var) {
+                continue;
+            }
+            auto index = var->expr().second;
+            Variable::setExpr(var, newExpr, index);
+        }
         return true;
     };
     TemplateMerge::getInstance("Merge").insertTemplate("ConvBiasAdd", compare, modify);

@@ -13,9 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "backend/cpu/compute/OptimizedComputer.hpp"
+#include "OptimizedComputer.hpp"
 #include <string.h>
-#include "core/Macro.h"
+#include "Macro.h"
 #ifdef MNN_USE_NEON
 #include <arm_neon.h>
 #endif

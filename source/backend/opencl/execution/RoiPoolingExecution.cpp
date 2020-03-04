@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/opencl/execution/RoiPoolingExecution.hpp"
-#include "core/Macro.h"
+#include "RoiPoolingExecution.hpp"
+#include <Macro.h>
 #include <float.h>
-#include "core/TensorUtils.hpp"
+#include "TensorUtils.hpp"
 
 namespace MNN {
 namespace OpenCL {

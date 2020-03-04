@@ -34,7 +34,6 @@ get_caffe1() { # model_URL, model_path, prototxt_URL, prototxt_path, model, MNN_
 
 get_tensorflow_lite() {
   if [ ! -e $4 ]; then
-    mkdir -p build
     pushd build > /dev/null
     download $1 $2.tgz && tar -xzf $2.tgz $2
     succ=$?
@@ -45,7 +44,6 @@ get_tensorflow_lite() {
 
 get_portrait_lite() {
   if [ ! -e $4 ]; then
-    mkdir -p build
     pushd build > /dev/null
     download $1 $2
     succ=$?

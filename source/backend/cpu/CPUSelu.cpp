@@ -6,10 +6,10 @@
 //  Copyright © 2018, Alibaba Group Holding Limited
 //
 
-#include "backend/cpu/CPUSelu.hpp"
+#include "CPUSelu.hpp"
 #include <math.h>
-#include "backend/cpu/CPUBackend.hpp"
-#include "core/Macro.h"
+#include "CPUBackend.hpp"
+#include "Macro.h"
 
 namespace MNN {
 

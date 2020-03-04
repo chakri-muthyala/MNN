@@ -9,7 +9,7 @@
 #ifndef CPUSelu_hpp
 #define CPUSelu_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 class CPUSelu : public Execution {

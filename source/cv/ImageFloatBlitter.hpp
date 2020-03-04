@@ -9,7 +9,8 @@
 #ifndef ImageFloatBlitter_hpp
 #define ImageFloatBlitter_hpp
 
-#include <MNN/ImageProcess.hpp>
+#include "ImageProcess.hpp"
+#include "Tensor_generated.h"
 namespace MNN {
 namespace CV {
 class ImageFloatBlitter {

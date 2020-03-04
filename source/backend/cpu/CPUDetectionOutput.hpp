@@ -9,7 +9,7 @@
 #ifndef CPUDetectionOutput_hpp
 #define CPUDetectionOutput_hpp
 
-#include "core/Execution.hpp"
+#include "Execution.hpp"
 
 namespace MNN {
 
